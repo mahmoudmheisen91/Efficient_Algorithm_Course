@@ -2,7 +2,7 @@
  * Main.cpp
  *
  *  Created on: Aug 22, 2015
- *      Author: Mahmoud Mheisens
+ *      Author: Mahmoud Mheisen
  */
 
 // Include Standard C+ Libraries:
