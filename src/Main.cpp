@@ -18,7 +18,7 @@ int main(void) {
 
 	Array<int> a(4);
 	a[0] = 1;
-	a[1] = 2;
+	a[1] = 7;
 	a[2] = 9;
 	a[3] = 4;
 	a.print();

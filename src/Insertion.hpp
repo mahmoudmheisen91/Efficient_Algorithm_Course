@@ -18,24 +18,27 @@
 #define ASCEND true
 #define DESCEND false
 
-namespace Insertion {
+class Insertion {
 
-	// Sort array in ascending order:
-	template <class T>
-	void sortAscend(Array<T> &array);
+	public:
+		// Generic Sort:
+		template <bool isAscend, class T>
+		static void sort(Array<T> &array);
 
-	// Sort array in descending order:
-	template <class T>
-	void sortDescend(Array<T> &array);
+		// Test if the array it is sorted:
+		template <bool isAscend, class T>
+		static bool isSorted(Array<T> &array);
 
-	// Generic Sort:
-	template <bool isAscend, class T>
-	void sort(Array<T> &array);
+	private:
+		// Sort array in ascending order:
+		template <class T>
+		static void sortAscend(Array<T> &array);
 
-	// Test if the array it is sorted:
-	template <bool isAscend, class T>
-	bool isSorted(Array<T> &array);
-}
+		// Sort array in descending order:
+		template <class T>
+		static void sortDescend(Array<T> &array);
+
+};
 
 // Include template file:
 #include "Insertion.tpp"
