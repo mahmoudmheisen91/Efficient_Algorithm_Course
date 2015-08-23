@@ -13,23 +13,14 @@ using namespace std;
 // Include Header Files:
 #include "Insertion.hpp"
 #include "Person.hpp"
+#include "clientCodes.hpp"
 
-// Test Insertion sort:
+// TODO: comparator
+
+// Sample client codes:
 int main(void) {
 
-	Array<Person> arrayOfPersons(3);
-	arrayOfPersons[0] = Person("A", 22);
-	arrayOfPersons[1] = Person("B", 33);
-	arrayOfPersons[2] = Person("C", 11);
-	arrayOfPersons.print();
-	cout << Insertion::isSorted(arrayOfPersons) << endl;
-
-	Insertion::sort(arrayOfPersons);
-	arrayOfPersons.print();
-	cout << Insertion::isSorted(arrayOfPersons) << endl;
-
-	Insertion::sort(arrayOfPersons, DESCEND);
-	arrayOfPersons.print();
+	test_comparable_objects();
 
 	return 0;
 }
