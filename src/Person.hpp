@@ -2,13 +2,13 @@
  * Person.hpp
  *
  *  Created on: Aug 23, 2015
- *      Author: redapple
+ *      Author: Mahmoud Mheisen
  */
 
 #ifndef SRC_PERSON_HPP_
 #define SRC_PERSON_HPP_
 
-// Include standerd library:
+// Include standard library:
 #include <iostream>
 using namespace std;
 
@@ -21,13 +21,13 @@ class Person : virtual public ComparableInterface<Person> {
 		Person();
 		Person(string name, int age);
 
-		// destructors:
+		// destructor:
 		virtual ~Person();
 
 		// overloaded compare method methods:
-		bool operator>(Person& other);
-		bool operator<(Person& other);
-		bool operator==(Person& other);
+		bool operator>(const Person& other);
+		bool operator<(const Person& other);
+		bool operator==(const Person& other);
 
 		// getters and setters:
 		int getAge() const;
@@ -43,6 +43,7 @@ class Person : virtual public ComparableInterface<Person> {
 		// interface implementation:
 		int compareTo(const Person& item);
 
+	// TODO: why friend??
 	// overloaded output stream:
 	friend ostream& operator<<(ostream& os, const Person& that);
 };
