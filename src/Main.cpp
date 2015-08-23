@@ -12,26 +12,24 @@ using namespace std;
 
 // Include Header Files:
 #include "Insertion.hpp"
+#include "Person.hpp"
 
 // Test Insertion sort:
 int main(void) {
 
-	Array<int> a(4);
-	a[0] = 1;
-	a[1] = 7;
-	a[2] = 9;
-	a[3] = 4;
-	a.print();
+	Array<Person> arrayOfPersons(3);
+	arrayOfPersons[0] = Person("A", 22);
+	arrayOfPersons[1] = Person("B", 33);
+	arrayOfPersons[2] = Person("C", 11);
+	arrayOfPersons.print();
+	cout << Insertion::isSorted(arrayOfPersons) << endl;
 
-	Insertion::sort<ASCEND>(a);
-	a.print();
-	cout << Insertion::isSorted<ASCEND>(a) << endl;
-	cout << Insertion::isSorted<DESCEND>(a) << endl;
+	Insertion::sort(arrayOfPersons);
+	arrayOfPersons.print();
+	cout << Insertion::isSorted(arrayOfPersons) << endl;
 
-	Insertion::sort<DESCEND>(a);
-	a.print();
-	cout << Insertion::isSorted<ASCEND>(a) << endl;
-	cout << Insertion::isSorted<DESCEND>(a) << endl;
+	Insertion::sort(arrayOfPersons, DESCEND);
+	arrayOfPersons.print();
 
 	return 0;
 }
