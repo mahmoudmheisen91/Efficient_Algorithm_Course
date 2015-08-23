@@ -84,7 +84,7 @@ Array<T>::Array(int length, T value) {
 // clear array:
 template <class T>
 Array<T>::~Array() {
-	// To protect from doubl free:
+	// To protect from double free:
 	if (internalArray != NULL) {
 		delete[] internalArray;
 	}
@@ -136,7 +136,7 @@ void Array<T>::swap(int i, int j) {
 	assert(i >= 0 && i < length);
 	assert(j >= 0 && j < length);
 
-	// Swaping:
+	// Swapping:
 	T temp = internalArray[i];
 	internalArray[i] = internalArray[j];
 	internalArray[j] = temp;
