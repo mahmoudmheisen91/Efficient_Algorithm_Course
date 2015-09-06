@@ -15,6 +15,7 @@ using namespace std;
 // Include Comparable interface:
 #include "ComparableInterface.hpp"
 
+// Virtual inheritance to avoid diamond problem:
 class Person : virtual public ComparableInterface<Person> {
 	public:
 		// constructors:
@@ -43,7 +44,6 @@ class Person : virtual public ComparableInterface<Person> {
 		// interface implementation:
 		int compareTo(const Person& item);
 
-	// TODO: why friend??
 	// overloaded output stream:
 	friend ostream& operator<<(ostream& os, const Person& that);
 };

@@ -14,48 +14,47 @@
 // Include Header Files:
 #include "Array.hpp"
 
-// Macro types:
-#define ASCEND true
-#define DESCEND false
+// Enum Constants:
+enum Order {ASCEND, DESCEND};
 
 class Insertion {
 
 	public:
 		// Generic Sort:
-		template <class E>
-		static void sort(Array<E> &array, bool isAscend = ASCEND);
+		template <class E = int>
+		static void sort(Array<E> &array, Order isAscend = ASCEND);
 
 		// Test if the array it is sorted:
-		template <class E>
-		static bool isSorted(Array<E> &array, bool isAscend = ASCEND);
+		template <class E = int>
+		static bool isSorted(const Array<E> &array, Order isAscend = ASCEND);
 
 	private:
 		// Sort array in ascending order:
-		template <class E>
+		template <class E = int>
 		static void sortAscend(Array<E> &array);
 
 		// Sort array in descending order:
-		template <class E>
+		template <class E = int>
 		static void sortDescend(Array<E> &array);
 
 };
 
 // Generic Sort:
 template <class E>
-void Insertion::sort(Array<E> &array, bool isAscend) {
-	isAscend? sortAscend(array) : sortDescend(array);
+void Insertion::sort(Array<E> &array, Order isAscend) {
+	(isAscend == ASCEND) ? sortAscend(array) : sortDescend(array);
 }
 
 // Test if the array it is sorted:
 template <class E>
-bool Insertion::isSorted(Array<E> &array, bool isAscend) {
+bool Insertion::isSorted(const Array<E> &array, Order isAscend) {
 	for(int i = 0; i < array.length-1; i++) {
 
-		if(isAscend && array[i] > array[i+1]) {
+		if(isAscend == ASCEND && array[i] > array[i+1]) {
 			return false;
 		}
 
-		if(!isAscend && array[i] < array[i+1]) {
+		if(isAscend == DESCEND && array[i] < array[i+1]) {
 			return false;
 		}
 
