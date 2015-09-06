@@ -22,16 +22,50 @@ void test_comparable_objects(void) {
 	arrayOfPersons[0] = Person("A", 22);
 	arrayOfPersons[1] = Person("B", 33);
 	arrayOfPersons[2] = Person("C", 11);
-	arrayOfPersons.print();
+	arrayOfPersons.toString();
 	cout << Insertion::isSorted(arrayOfPersons) << endl;
 
 	Insertion::sort(arrayOfPersons);
-	arrayOfPersons.print();
+	arrayOfPersons.toString();
 	cout << Insertion::isSorted(arrayOfPersons) << endl;
 
 	Insertion::sort(arrayOfPersons, DESCEND);
-	arrayOfPersons.print();
+	arrayOfPersons.toString();
+	cout << Insertion::isSorted(arrayOfPersons, DESCEND) << endl;
 }
+
+void test_copy_operations(void) {
+	const Array<int> a(3);
+	a[0] = 0;
+	a[1] = 1;
+	a[2] = 2;
+
+	Array<> b(a);
+	Array<> c(3);
+	c = b;
+
+	a[1] = 5;
+	cout << c << b << a;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

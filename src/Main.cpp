@@ -21,6 +21,7 @@ using namespace std;
 int main(void) {
 
 	test_comparable_objects();
+	//test_copy_operations();
 
 	return 0;
 }

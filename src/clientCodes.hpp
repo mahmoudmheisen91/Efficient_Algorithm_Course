@@ -10,6 +10,6 @@
 
 
 void test_comparable_objects(void);
-
+void test_copy_operations(void);
 
 #endif /* SRC_CLIENTCODES_HPP_ */

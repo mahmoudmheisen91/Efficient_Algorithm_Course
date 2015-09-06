@@ -18,37 +18,36 @@
 
 // Include standard I/O streams:
 #include <iostream>
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 
-template <class T>
+template <class T = int>
 class Array {
 
 	public:
+		// Default constructor:
+		Array();
+
 		// Declare array with a specific length:
 		Array(int length);
 
 		// Initialize the array with predefined value:
 		Array(int length, T value);
 
+		// Copy constructor:
+		Array(const Array<T>& other);
+
 		// clear array:
 		virtual ~Array();
 
-		// overload [] so that the array will keep track of it's size:
-		T& operator[](int i);
+		// Copy assignment:
+		Array<T>& operator=(const Array<T>& other);
 
-		// when one array is assigned to another, this is just a pointer manipulation
-		// that takes constant time:
-		Array<T>& operator=(Array<T> &b);
+		// overload [] so that the array will keep track of it's size:
+		T& operator[](int i) const;
 
 		// Print array in one line:
-		void print(void);
-
-		// Fill array with predefined value:
-		void fill(T value);
-
-		// Swap two entries:
-		void swap(int i, int j);
+		void toString(void) const;
 
 		// length of the array:
 		int length;
@@ -57,7 +56,21 @@ class Array {
 		// Dynamic array:
 		T* internalArray;
 
+		// Clone method - to be called inside copy constructor and operator:
+		void clone(const Array& other);
+
+	// Template friend function that implements the toString() method with << operator:
+	template <class E>
+	friend std::ostream& operator<<(std::ostream& output, const Array<E>& other);
+
 };
+
+// Default constructor:
+template <class T>
+Array<T>::Array() {
+	this->length = 0;
+	this->internalArray = NULL;
+}
 
 // Declare array with a specific length:
 template <class T>
@@ -76,9 +89,19 @@ Array<T>::Array(int length, T value) {
 	// check size:
 	assert(length > 0);
 
+	// Initialize member variables:
 	this->length = length;
-	internalArray = new T[length];
-	this->fill(value);
+	this->internalArray = new T[length];
+
+	// Fill:
+	std::fill(this->internalArray, this->internalArray + this->length, value);
+}
+
+// Copy constructor:
+template <class T>
+Array<T>::Array(const Array<T>& other) {
+	// Clone other:
+	clone(other);
 }
 
 // clear array:
@@ -86,60 +109,64 @@ template <class T>
 Array<T>::~Array() {
 	// To protect from double free:
 	if (internalArray != NULL) {
-		delete[] internalArray;
+		// Delete content of internalArray:
+		delete[] this->internalArray;
+
+		// Delete the pointer itself:
+		this->internalArray = NULL;
 	}
 }
 
-// overload [] so that the array will keep track of it's size:
+// Copy assignment:
 template <class T>
-T& Array<T>::operator[](int i) {
-	assert(i >= 0 && i < length);
-	return internalArray[i];
-}
-
-// when one array is assigned to another, this is just a pointer manipulation
-// that takes constant time:
-template <class T>
-Array<T>& Array<T>::operator=(Array<T> &other) {
+Array<T>& Array<T>::operator=(const Array<T> &other) {
 	// Free just in case sizes are not identical:
-	if (internalArray != NULL) {
-		delete[] internalArray;
-	}
+	this->~Array();
 
-	// pointer manipulation:
-	internalArray = other.internalArray;
-	other.internalArray = NULL;
-	length = other.length;
+	// Clone other:
+	clone(other);
 
 	return *this;
 }
 
+// overload [] so that the array will keep track of it's size:
+template <class T>
+T& Array<T>::operator[](int i) const {
+	assert(i >= 0 && i < length);
+	return internalArray[i];
+}
+
 // Print array in one line:
 template <class T>
-void Array<T>::print(void) {
+void Array<T>::toString(void) const {
 	for(int i = 0; i < length; i++) {
 		std::cout << internalArray[i] << " ";
 	}
 	std::cout << std::endl;
 }
 
-// Fill array with predefined value:
+// Clone method - to be called inside copy constructor and operator:
 template <class T>
-void Array<T>::fill(T value) {
-	std::fill(internalArray, internalArray+length, value);
+void Array<T>::clone(const Array& other) {
+	// Copy length value:
+	this->length = other.length;
+
+	// Allocate internalArray before copying: (Very Important):
+	this->internalArray = new T[this->length];
+
+	// Start copying:
+	for(int i = 0; i < this->length; i++)
+		this->internalArray[i] = other.internalArray[i];
 }
 
-// Swap two entries:
-template <class T>
-void Array<T>::swap(int i, int j) {
-	// Checking:
-	assert(i >= 0 && i < length);
-	assert(j >= 0 && j < length);
-
-	// Swapping:
-	T temp = internalArray[i];
-	internalArray[i] = internalArray[j];
-	internalArray[j] = temp;
+// Friend function that implements the toString() method with << operator:
+template <class E>
+std::ostream& operator<<(std::ostream& output, const Array<E>& other) {
+	for(int i = 0; i < other.length; i++) {
+		output << other.internalArray[i] << " ";
+	}
+	output << std::endl;
+	return output;
 }
 
 #endif /* ARRAY_HPP_ */
