@@ -9,7 +9,6 @@
 
 // constructors:
 Person::Person() {
-	// TODO Auto-generated constructor stub
 	this->name = "";
 	this->age = 0;
 }
@@ -21,7 +20,7 @@ Person::Person(string name, int age) {
 
 // destructor:
 Person::~Person() {
-	// TODO Auto-generated destructor stub
+
 }
 
 // overloaded compare method methods:

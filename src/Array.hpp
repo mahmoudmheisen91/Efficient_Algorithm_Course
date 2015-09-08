@@ -46,6 +46,9 @@ class Array {
 		// overload [] so that the array will keep track of it's size:
 		T& operator[](int i) const;
 
+		// Set the length of the array, to be used with the default constructor:
+		void setLength(int length);
+
 		// Print array in one line:
 		void toString(void) const;
 
@@ -59,6 +62,7 @@ class Array {
 		// Clone method - to be called inside copy constructor and operator:
 		void clone(const Array& other);
 
+	// TODO: E type:
 	// Template friend function that implements the toString() method with << operator:
 	template <class E>
 	friend std::ostream& operator<<(std::ostream& output, const Array<E>& other);
@@ -136,6 +140,20 @@ T& Array<T>::operator[](int i) const {
 	return internalArray[i];
 }
 
+// Set the length of the array, to be used with the default constructor:
+template <class T>
+void Array<T>::setLength(int length) {
+	// check size:
+	assert(length > 0);
+
+	// Free just in case if it is not used with the default constructor:
+	this->~Array();
+
+	// The size of an array is specified at the time of creation:
+	this->length = length;
+	internalArray = new T[length];
+}
+
 // Print array in one line:
 template <class T>
 void Array<T>::toString(void) const {
@@ -155,8 +173,7 @@ void Array<T>::clone(const Array& other) {
 	this->internalArray = new T[this->length];
 
 	// Start copying:
-	for(int i = 0; i < this->length; i++)
-		this->internalArray[i] = other.internalArray[i];
+	std::copy(other.internalArray, other.internalArray + length, internalArray);
 }
 
 // Friend function that implements the toString() method with << operator:
