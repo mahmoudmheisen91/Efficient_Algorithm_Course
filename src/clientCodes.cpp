@@ -16,6 +16,7 @@ using namespace std;
 // Include project headers:
 #include "Insertion.hpp"
 #include "Person.hpp"
+#include "StackArray.hpp"
 
 void test_comparable_objects(void) {
 	Array<Person> arrayOfPersons(3);
@@ -49,7 +50,65 @@ void test_copy_operations(void) {
 
 }
 
+void test_stack_array(void) {
+	StackArray<int> s;
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
 
+	s.push(1);
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s.push(2);
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s.push(3);
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s.push(4);
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s.push(5);
+	StackArray<int> s2(s);
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s.pop();
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	int b = s.top();
+	cout << "top = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	b = s.pop();
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	b = s.pop();
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	b = s.pop();
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	b = s.pop();
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
+
+	s2.toString();
+	cout << "S2 - Size = " << s2.size() << " ,Length " << s2.length() << endl << endl;
+
+	s.pop();
+}
 
 
 
