@@ -14,9 +14,20 @@
 using namespace std;
 
 // Include project headers:
+#include "Array.hpp"
 #include "Insertion.hpp"
 #include "Person.hpp"
 #include "StackArray.hpp"
+#include "Node.hpp"
+
+void test_array_class(void) {
+	Array<int> a(4, 0);
+	Array<int> c(4, 1);
+	Array<int> b(a);
+	b = c;
+	b[2] = 3;
+	cout << b << endl;
+}
 
 void test_comparable_objects(void) {
 	Array<Person> arrayOfPersons(3);
@@ -110,7 +121,14 @@ void test_stack_array(void) {
 	s.pop();
 }
 
+void test_node_class(void) {
+	Node<int> n1, n2(10), n3(n2);
 
+	n1.setData(3);
+	n3.setNext(n1);
+	n3.setNext(n1);
+	n3.setPrevious(n2);
+}
 
 
 

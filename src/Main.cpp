@@ -20,9 +20,11 @@ using namespace std;
 // Sample client codes:
 int main(void) {
 
+	test_array_class();
 	//test_comparable_objects();
 	//test_copy_operations();
-	test_stack_array();
+	//test_stack_array();
+	//test_node_class();
 
 	return 0;
 }
