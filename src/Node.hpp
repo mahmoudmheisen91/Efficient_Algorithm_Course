@@ -24,27 +24,10 @@ class Node {
 		// Destructor:
 		virtual ~Node();
 
-		// Assignment operator overloading:
-		const Node<T>& operator=(const Node<T>& other);
-
-		// Setters:
-		void setData(const T data);
-		void setNext(const Node<T>& next);
-		void setPrevious(const Node<T>& previous);
-
-		// Getters:
-		T getData() const;
-		T* getNext() const;
-		T* getPrevious() const;
-
-	private:
 		// Member variables:
 		T data;
 		Node<T>* next;
 		Node<T>* previous;
-
-		// Clone method - to be called inside copy constructor and assignment operator:
-		void clone(const Node<T>& other);
 };
 
 // Constructors:
@@ -60,83 +43,24 @@ template <class T>
 Node<T>::Node(const T data) {
 	// Initialize:
 	this->data = data;
-	this->next = new Node<T>;
-	this->previous = new Node<T>;
+	this->next = NULL;
+	this->previous = NULL;
 }
 
 // Copy Constructor:
 template <class T>
 Node<T>::Node(const Node& other) {
 	// Copy:
-	clone(other);
+	this->data = other.data;
+	this->next = other.next;
+	this->previous = other.previous;
 }
 
 // Destructor:
 template <class T>
 Node<T>::~Node() {
-	// Delete next pointer:
-	if(this->next != NULL) {
-		delete next;
-		next = NULL;
-	}
-
-	// Delete previous pointer:
-	if(this->previous != NULL) {
-		delete previous;
-		previous = NULL;
-	}
-}
-
-// Assignment operator overloading:
-template <class T>
-const Node<T>& Node<T>::operator=(const Node<T>& other) {
-	// Free just in case if it is preassigned:
-	this->~Node();
-
-	// Copy:
-	clone(other);
-
-	return *this;
-}
-
-// Setters:
-template <class T>
-void Node<T>::setData(const T data) {
-	this->data = data;
-}
-
-template <class T>
-void Node<T>::setNext(const Node<T>& next) {
-	*(this->next) = next;
-}
-
-template <class T>
-void Node<T>::setPrevious(const Node<T>& previous) {
-	*(this->previous) = previous;
-}
-
-// Getters:
-template <class T>
-T Node<T>::getData() const {
-	return this->data;
-}
-
-template <class T>
-T* Node<T>::getNext() const {
-	return this->next;
-}
-
-template <class T>
-T* Node<T>::getPrevious() const {
-	return this->previous;
-}
-
-// Clone method - to be called inside copy constructor and assignment operator:
-template <class T>
-void Node<T>::clone(const Node<T>& other) {
-	this->data = other.data;
-	this->next = other.next;
-	this->previous = other.previous;
+	// TODO: is correct?
+	// no Delete because if we deleted next we will have infinite recursive loop
 }
 
 #endif /* SRC_NODE_HPP_ */
