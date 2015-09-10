@@ -13,5 +13,6 @@ void test_comparable_objects(void);
 void test_copy_operations(void);
 void test_stack_array(void);
 void test_node_class(void);
+void test_stack_node(void);
 
 #endif /* SRC_CLIENTCODES_HPP_ */

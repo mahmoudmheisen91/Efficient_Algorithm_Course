@@ -19,6 +19,7 @@ using namespace std;
 #include "Person.hpp"
 #include "StackArray.hpp"
 #include "Node.hpp"
+#include "StackNode.hpp"
 
 void test_array_class(void) {
 	Array<int> a(4, 0);
@@ -115,21 +116,96 @@ void test_stack_array(void) {
 	s.toString();
 	cout << "Size = " << s.size() << " ,Length " << s.length() << endl << endl;
 
-	s2.toString();
+ 	s2.toString();
 	cout << "S2 - Size = " << s2.size() << " ,Length " << s2.length() << endl << endl;
 
 	s.pop();
 }
 
 void test_node_class(void) {
-	Node<int> n1, n2(10), n3(n2);
+	Node<int>* n1 = new Node<int>;
+	Node<int>* n2 = new Node<int>(10);
+	Node<int>* n3 = new Node<int>(*n2);
 
-	n1.setData(3);
-	n3.setNext(n1);
-	n3.setNext(n1);
-	n3.setPrevious(n2);
+	n3->next = n1;
+	n3->previous = n2;
 }
 
+void test_stack_node(void) {
+	StackNode<int> s;
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.push(1);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.push(2);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.push(3);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.push(4);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.push(5);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	StackNode<int> s2(s);
+
+	int b = s.pop(); // 5
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.top(); // 4
+	cout << "top = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.pop(); // 4
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl; // 3
+
+	StackNode<int> s4 = s;
+
+	b = s.pop(); // 3
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl; // 2
+
+	b = s.pop(); // 2
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl; // 1
+
+	b = s.pop(); // 1
+	cout << "pop = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl; // 0
+
+ 	s2.toString();
+ 	cout << "Size = " << s2.size() << endl << endl;
+
+ 	StackNode<int>* s3 = new StackNode<int>(s2);
+ 	cout << "Size = " << s3->size() << endl << endl;
+ 	delete s3;
+ 	cout << "Size = " << s3->size() << endl << endl;
+
+ 	s4.toString();
+ 	cout << "Size = " << s4.size() << endl << endl;
+
+ 	s4 = s;
+ 	s4.toString();
+ 	cout << "Size = " << s4.size() << endl << endl;
+
+	s.pop();
+}
 
 
 
