@@ -14,5 +14,6 @@ void test_copy_operations(void);
 void test_stack_array(void);
 void test_node_class(void);
 void test_stack_node(void);
+void test_queue_array(void);
 
 #endif /* SRC_CLIENTCODES_HPP_ */

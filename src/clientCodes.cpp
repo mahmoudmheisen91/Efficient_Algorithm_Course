@@ -20,6 +20,7 @@ using namespace std;
 #include "StackArray.hpp"
 #include "Node.hpp"
 #include "StackNode.hpp"
+#include "QueueArray.hpp"
 
 void test_array_class(void) {
 	Array<int> a(4, 0);
@@ -207,7 +208,70 @@ void test_stack_node(void) {
 	s.pop();
 }
 
+void test_queue_array(void) {
+	QueueArray<int> s;
+	cout << "Size = " << s.size() << endl << endl;
 
+	s.enqueue(1);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.enqueue(2);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.enqueue(3);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.enqueue(4);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	s.enqueue(5);
+	QueueArray<int> s2(s);
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	int b = s.dequeue();
+	cout << "dequeue = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.top();
+	cout << "top = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.dequeue();
+	cout << "dequeue = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	QueueArray<int> s3 = s;
+	s3.toString();
+	cout << "S3 - Size = " << s3.size() << endl << endl;
+
+	b = s.dequeue();
+	cout << "dequeue = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.dequeue();
+	cout << "dequeue = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+	b = s.dequeue();
+	cout << "dequeue = " << b << endl;
+	s.toString();
+	cout << "Size = " << s.size() << endl << endl;
+
+ 	s2.toString();
+	cout << "S2 - Size = " << s2.size() << endl << endl;
+
+	s.dequeue();
+}
 
 
 
