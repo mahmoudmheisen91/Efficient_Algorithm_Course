@@ -25,7 +25,9 @@ int main(void) {
 	//test_copy_operations();
 	//test_stack_array();
 	//test_node_class();
-	test_stack_node();
+	//test_stack_node();
+	//test_queue_array();
+	test_queue_node();
 
 	return 0;
 }
