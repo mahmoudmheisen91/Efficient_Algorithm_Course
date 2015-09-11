@@ -15,6 +15,12 @@
 // Include project headers:
 #include "Node.hpp"
 
+// When declaring a new node, do not use new keyword, because we assign another pointer node
+// to it and the allocated memory using new keyword is lost, the delete will remove the assigned
+// pointer not the allocated chunk, just make a pointer:
+// use this: Node<T>* current;
+// not this: Node<T>* current = new Node<T>();
+
 template <class T>
 class StackNode {
 	public:
@@ -79,10 +85,12 @@ StackNode<T>::~StackNode() {
 	this->currentSize = 0;
 
 	// Make new node that point to head:
-	Node<T>* current = new Node<T>();
+	Node<T>* current;
 
 	// Delete head pointer and all other pointers:
 	while(head != NULL) {
+		// Assign current to head, move the head to next one, then remove the current
+		// do not delete the current before moving the head to the next one:
 		current = head;
 		head = head->next;
 
@@ -100,6 +108,8 @@ const StackNode<T>& StackNode<T>::operator=(const StackNode<T>& other) {
 
 	// Copy:
 	clone(other);
+
+	return *this;
 }
 
 // Push element at the top of the stack:
@@ -130,7 +140,7 @@ T StackNode<T>::pop() throw(std::runtime_error) {
 	T item = head->data;
 
 	// Make new node that point to head, to delete it latter:
-	Node<T>* old = new Node<T>();
+	Node<T>* old;
 	old = head;
 
 	// Make the head point to the next value in the stack:
@@ -179,7 +189,7 @@ void StackNode<T>::toString() const {
 	}
 
 	// Make new node that points to the head, to loop through the stack:
-	Node<T>* current = new Node<T>();
+	Node<T>* current;
 	current = head;
 
 	// Print:
@@ -189,6 +199,7 @@ void StackNode<T>::toString() const {
 	}
 
 	std::cout << std::endl;
+	delete current;
 }
 
 // Clone method:
@@ -202,7 +213,7 @@ void StackNode<T>::clone(const StackNode& other) {
 	if(other.isEmpty()) return;
 
 	// Make new node that points to the head of the other stack, to loop through the stack:
-	Node<T>* current = new Node<T>();
+	Node<T>* current;
 	current = other.head;
 
 	// TODO: two loops:
@@ -223,6 +234,8 @@ void StackNode<T>::clone(const StackNode& other) {
 		this->push(tempStack.pop()); // inside pop the head is changed
 		current = tempStack.head; 	 // no need to point to the next
 	} // in this loop, we removed every data from temp stack, to reduce memory usage
+
+	delete current;
 }
 
 #endif /* SRC_STACKNODE_HPP_ */
