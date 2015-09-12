@@ -27,7 +27,8 @@ int main(void) {
 	//test_node_class();
 	//test_stack_node();
 	//test_queue_array();
-	test_queue_node();
+	//test_queue_node();
+	test_max_heap_array();
 
 	return 0;
 }

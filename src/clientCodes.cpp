@@ -22,6 +22,7 @@ using namespace std;
 #include "StackNode.hpp"
 #include "QueueArray.hpp"
 #include "QueueNode.hpp"
+#include "MaxHeapArray.hpp"
 
 void test_array_class(void) {
 	Array<int> a(4, 0);
@@ -196,19 +197,19 @@ void test_stack_node(void) {
 	cout << "Size = " << s.size() << endl << endl; // 0
 
  	s2.toString();
- 	cout << "Size = " << s2.size() << endl << endl;
+ 	cout << "S2 - Size = " << s2.size() << endl << endl;
 
  	StackNode<int>* s3 = new StackNode<int>(s2);
- 	cout << "Size = " << s3->size() << endl << endl;
+ 	cout << "S3 - Size = " << s3->size() << endl << endl;
  	delete s3;
- 	cout << "Size = " << s3->size() << endl << endl;
+ 	//cout << "S3 - Size = " << s3->size() << endl << endl;
 
  	s4.toString();
- 	cout << "Size = " << s4.size() << endl << endl;
+ 	cout << "S4 - Size = " << s4.size() << endl << endl;
 
  	s4 = s;
  	s4.toString();
- 	cout << "Size = " << s4.size() << endl << endl;
+ 	cout << "S4 - Size = " << s4.size() << endl << endl;
 
 	//s.pop();
 }
@@ -352,7 +353,101 @@ void test_queue_node(void) {
 	//s.pop();
 }
 
+void test_max_heap_array(void) {
+	MaxHeapArray<int> h1(8);
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
 
+	h1.insert(1);
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	h1.insert(2);
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	h1.insert(3);
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	h1.insert(4);
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	h1.insert(5);
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	int b = h1.deleteMax();
+	cout << "h1- deleteMax = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	b = h1.max();
+	cout << "h1- max = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	MaxHeapArray<int> h2(h1);
+
+	b = h1.deleteMax();
+	cout << "h1- deleteMax = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	b = h1.deleteMax();
+	cout << "h1- deleteMax = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	b = h1.deleteMax();
+	cout << "h1- deleteMax = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	b = h1.deleteMax();
+	cout << "h1- deleteMax = " << b << endl;
+	h1.toString();
+	cout << "h1 - Size = " << h1.size() << ", Length = " << h1.length() << endl << endl;
+
+	Array<int> a(5);
+	a[0] = 0;
+	a[1] = 5;
+	a[2] = -4;
+	a[3] = 2;
+	a[4] = 2;
+
+	h2.toString();
+	cout << "h2 - Size = " << h2.size() << ", Length = " << h2.length() << endl << endl;
+
+	b = h2.deleteMax();
+	cout << "h2- deleteMax = " << b << endl;
+	h2.toString();
+	cout << "h2 - Size = " << h2.size() << ", Length = " << h2.length() << endl << endl;
+
+	h2.insert(0);
+	h2.toString();
+	cout << "h2 - Size = " << h2.size() << ", Length = " << h2.length() << endl << endl;
+
+	MaxHeapArray<int> h3(a);
+	h3.toString();
+	cout << "h3 - Size = " << h3.size() << ", Length = " << h3.length() << endl << endl;
+
+	b = h3.deleteMax();
+	cout << "h3- deleteMax = " << b << endl;
+	h3.toString();
+	cout << "h3 - Size = " << h3.size() << ", Length = " << h3.length() << endl << endl;
+
+	MaxHeapArray<int> h4 = h2;
+	h4.toString();
+	cout << "h4 - Size = " << h4.size() << ", Length = " << h4.length() << endl << endl;
+
+	b = h4.deleteMax();
+	cout << "h4- deleteMax = " << b << endl;
+	h4.toString();
+	cout << "h4 - Size = " << h4.size() << ", Length = " << h4.length() << endl << endl;
+
+	//b = h1.deleteMax(); // will throw run time error because the heap is empty
+}
 
 
 
