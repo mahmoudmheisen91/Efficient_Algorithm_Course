@@ -149,7 +149,7 @@ T QueueNode<T>::dequeue() throw(std::runtime_error) {
 	T item = head->data;
 
 	// Make new node that point to head, to delete it latter:
-	Node<T>* old = new Node<T>();
+	Node<T>* old;
 	old = head;
 
 	// Make the head point to the next value in the queue:
@@ -198,7 +198,7 @@ void QueueNode<T>::toString() const {
 	}
 
 	// Make new node that points to the head, to loop through the queue:
-	Node<T>* current = new Node<T>;
+	Node<T>* current;
 	current = head;
 
 	// Print:
