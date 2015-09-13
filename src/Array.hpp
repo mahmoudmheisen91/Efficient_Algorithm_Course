@@ -212,7 +212,37 @@ void Array<T>::setLength(unsigned int size) {
 	std::fill(this->internalArray, this->internalArray + this->size, T());
 }
 
+// Resize array to new capacity:
+template <class T>
+void Array<T>::resize(unsigned int capacity) {
+	// If it is length equal to zero:
+	if(this->size == 0) {
+		setLength(capacity);
+		return;
+	}
 
+	// Save old length then update it:
+	unsigned int oldSize = this->size;
+	this->size = capacity;
+
+	// Make a pointer that points to the old array:
+	T* temp = this->internalArray;
+
+	// Allocate new chunk to this array:
+	this->internalArray = new T[this->size];
+
+	// Copy from the old array to the new array:
+	for(int i = 0; i < oldSize; i++)
+		this->internalArray[i] = temp[i];
+
+	// Delete temp pointer:
+	delete[] temp;
+	temp = NULL;
+
+	// Initialize remainder values in the new array with the default value:
+	for(int i = oldSize; i < this->size; i++)
+		this->internalArray[i] = T();
+}
 
 // Print array in one line:
 template <class T>
