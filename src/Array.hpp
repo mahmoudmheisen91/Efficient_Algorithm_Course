@@ -20,6 +20,8 @@
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+#include <string>
+#include <sstream>
 
 // Class template, with default type equal to int:
 template <class T = int>
@@ -62,8 +64,8 @@ class Array {
 		// Resize array to new capacity:
 		void resize(unsigned int capacity);
 
-		// Print array in one line:
-		void toString(void) const;
+		// Convert array to string:
+		std::string toString(void) const;
 
 		// Length method:
 		inline unsigned int length() const {
@@ -244,19 +246,17 @@ void Array<T>::resize(unsigned int capacity) {
 		this->internalArray[i] = T();
 }
 
-// Print array in one line:
+// Convert array to string:
 template <class T>
-void Array<T>::toString(void) const {
-	// Check if the array is NULL:
-	if(this->internalArray == NULL) {
-		std::cout << "NULL" << std::endl;
-		return;
-	}
+std::string Array<T>::toString(void) const {
+	// Make an output string stream and insert this into it:
+    std::ostringstream oss;
 
-	for(int i = 0; i < this->size; i++) {
-		std::cout << this->internalArray[i] << " ";
-	}
-	std::cout << std::endl;
+    // std::ostringstream is inherited from std::ostream:
+    oss << *this;	// will call the friend function operator <<
+
+    // Transform the string stream to string:
+    return oss.str();
 }
 
 // Clone method - to be called inside copy constructor and assignment operator:
@@ -277,14 +277,14 @@ template <class E>
 std::ostream& operator<<(std::ostream& output, const Array<E>& other) {
 	// Check if the array is NULL:
 	if(other.internalArray == NULL) {
-		output << "NULL" << std::endl;
+		output << "NULL";
 		return output;
 	}
 
+	// Insert the array in output stream:
 	for(int i = 0; i < other.size; i++) {
 		output << other.internalArray[i] << " ";
 	}
-	output << std::endl;
 	return output;
 }
 
