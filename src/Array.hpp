@@ -5,14 +5,6 @@
  *      Author: Mahmoud Mheisen
  */
 
-/*
- * In this chapter, and throughout this book, it will be convenient to have
- * arrays that keep track of their size. The usual C++ arrays do not do this,
- * so we have defined a class, Array, that keeps track of its length. The
- * implementation of this class is straightforward. It is implemented as a
- * standard C++ array, array, and an integer, length.
- */
-
 #ifndef ARRAY_HPP_
 #define ARRAY_HPP_
 
@@ -29,7 +21,7 @@ class Array {
 
 	public:
 		// Default constructor:
-		Array();
+		Array(void);
 
 		// Declare array with a specific length:
 		Array(const unsigned int& size);
@@ -41,7 +33,7 @@ class Array {
 		Array(const Array<T>& other);
 
 		// Clear array:
-		virtual ~Array();
+		virtual ~Array(void);
 
 		// Copy assignment:
 		const Array<T>& operator=(const Array<T>& other);
@@ -67,8 +59,11 @@ class Array {
 		// Convert array to string:
 		std::string toString(void) const;
 
+		// Clear the array:
+		void clear(void);
+
 		// Length method:
-		inline unsigned int length() const {
+		inline unsigned int length(void) const {
 			return this->size;
 		}
 
@@ -77,7 +72,7 @@ class Array {
 		unsigned int size;
 
 		// Dynamic array:
-		T* internalArray;
+		T* elements;
 
 		// Clone method - to be called inside copy constructor and assignment operator:
 		void clone(const Array<T>& other);
@@ -95,10 +90,10 @@ class Array {
 
 // Default constructor:
 template <class T>
-Array<T>::Array() {
+Array<T>::Array(void) {
 	// Initialize member variables:
 	this->size = 0;
-	this->internalArray = NULL;
+	this->elements = NULL;
 }
 
 // Declare array with a specific length:
@@ -109,10 +104,10 @@ Array<T>::Array(const unsigned int& size) {
 
 	// Initialize member variables:
 	this->size = size;
-	this->internalArray = new T[this->size];
+	this->elements = new T[this->size];
 
 	// Fill with default values, just in case if print without initialization:
-	std::fill(this->internalArray, this->internalArray + this->size, T());
+	std::fill(this->elements, this->elements + this->size, T());
 }
 
 // Initialize the array with predefined value:
@@ -123,10 +118,10 @@ Array<T>::Array(const unsigned int& size, const T& value) {
 
 	// Initialize member variables:
 	this->size = size;
-	this->internalArray = new T[this->size];
+	this->elements = new T[this->size];
 
 	// Fill:
-	std::fill(this->internalArray, this->internalArray + this->size, value);
+	std::fill(this->elements, this->elements + this->size, value);
 }
 
 // Copy constructor:
@@ -138,14 +133,14 @@ Array<T>::Array(const Array<T>& other) {
 
 // Clear array:
 template <class T>
-Array<T>::~Array() {
+Array<T>::~Array(void) {
 	// To protect from double free:
-	if (this->internalArray != NULL) {
+	if (this->elements != NULL) {
 		// Delete content of internalArray:
-		delete[] this->internalArray;
+		delete[] this->elements;
 
 		// Make the pointer points to NULL, instead of unknown place:
-		this->internalArray = NULL;
+		this->elements = NULL;
 	}
 }
 
@@ -169,14 +164,14 @@ const Array<T>& Array<T>::operator=(const Array<T> &other) {
 template <class T>
 T& Array<T>::operator[](const unsigned int& index) {
 	assert(index >= 0 && index < this->size);
-	return this->internalArray[index];
+	return this->elements[index];
 }
 
 // Overload [] for constant arrays:
 template <class T>
 const T& Array<T>::operator[](const unsigned int& index) const {
 	assert(index >= 0 && index < this->size);
-	return this->internalArray[index];
+	return this->elements[index];
 }
 
 // Is equal operator:
@@ -188,7 +183,7 @@ bool Array<T>::operator==(const Array<T>& other) const {
 
 	// Check array:
 	for(int i = 0; i < this->size; i++) {
-		if(this->internalArray[i] != other.internalArray[i])
+		if(this->elements[i] != other.elements[i])
 			return false;
 	}
 
@@ -213,10 +208,10 @@ void Array<T>::setLength(const unsigned int& size) {
 
 	// The size of an array is specified at the time of creation:
 	this->size = size;
-	this->internalArray = new T[this->size];
+	this->elements = new T[this->size];
 
 	// Fill with default values, just in case if print without initialization:
-	std::fill(this->internalArray, this->internalArray + this->size, T());
+	std::fill(this->elements, this->elements + this->size, T());
 }
 
 // Resize array to new capacity:
@@ -233,14 +228,14 @@ void Array<T>::resize(const unsigned int& capacity) {
 	this->size = capacity;
 
 	// Make a pointer that points to the old array:
-	T* temp = this->internalArray;
+	T* temp = this->elements;
 
 	// Allocate new chunk to this array:
-	this->internalArray = new T[this->size];
+	this->elements = new T[this->size];
 
 	// Copy from the old array to the new array:
 	for(int i = 0; i < oldSize; i++)
-		this->internalArray[i] = temp[i];
+		this->elements[i] = temp[i];
 
 	// Delete temp pointer:
 	delete[] temp;
@@ -248,7 +243,7 @@ void Array<T>::resize(const unsigned int& capacity) {
 
 	// Initialize remainder values in the new array with the default value:
 	for(int i = oldSize; i < this->size; i++)
-		this->internalArray[i] = T();
+		this->elements[i] = T();
 }
 
 // Convert array to string:
@@ -264,6 +259,17 @@ std::string Array<T>::toString(void) const {
     return oss.str();
 }
 
+// Clear the array:
+template<class T>
+void Array<T>::clear(void) {
+	// Call destructor:
+	this->~Array();
+
+	// Initialize:
+	this->size = 0;
+	this->elements = NULL;
+}
+
 // Clone method - to be called inside copy constructor and assignment operator:
 template <class T>
 void Array<T>::clone(const Array<T>& other) {
@@ -271,24 +277,24 @@ void Array<T>::clone(const Array<T>& other) {
 	this->size = other.size;
 
 	// Allocate internalArray before copying: (Very Important):
-	this->internalArray = new T[this->size];
+	this->elements = new T[this->size];
 
 	// Start copying:
-	std::copy(other.internalArray, other.internalArray + size, this->internalArray);
+	std::copy(other.elements, other.elements + size, this->elements);
 }
 
 // Friend function that implements the toString() method with << operator:
 template <class E>
 std::ostream& operator<<(std::ostream& output, const Array<E>& other) {
 	// Check if the array is NULL:
-	if(other.internalArray == NULL) {
+	if(other.elements == NULL) {
 		output << "NULL";
 		return output;
 	}
 
 	// Insert the array in output stream:
 	for(int i = 0; i < other.size; i++) {
-		output << other.internalArray[i] << " ";
+		output << other.elements[i] << " ";
 	}
 	return output;
 }
@@ -299,7 +305,7 @@ std::istream& operator>>(std::istream& input, Array<E>& other) {
 
 	// Read from command line:
 	for(int i = 0; i < other.size; i++) {
-		input >> other.internalArray[i];
+		input >> other.elements[i];
 	}
 
 	return input;
