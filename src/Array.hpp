@@ -32,10 +32,10 @@ class Array {
 		Array();
 
 		// Declare array with a specific length:
-		Array(unsigned int length);
+		Array(const unsigned int& size);
 
 		// Initialize the array with predefined value:
-		Array(unsigned int length, T value);
+		Array(const unsigned int& size, const T& value);
 
 		// Copy constructor:
 		Array(const Array<T>& other);
@@ -47,10 +47,10 @@ class Array {
 		const Array<T>& operator=(const Array<T>& other);
 
 		// Overload [] so that the array will check the index before accessing:
-		T& operator[](unsigned int index);
+		T& operator[](const unsigned int& index);
 
 		// Overload [] for constant arrays:
-		const T& operator[](unsigned int index) const;
+		const T& operator[](const unsigned int& index) const;
 
 		// Is equal operator:
 		bool operator==(const Array<T>& other) const;
@@ -59,10 +59,10 @@ class Array {
 		bool operator!=(const Array<T>& other) const;
 
 		// Set the length of the array, to be used with the default constructor:
-		void setLength(unsigned int length);
+		void setLength(const unsigned int& length);
 
 		// Resize array to new capacity:
-		void resize(unsigned int capacity);
+		void resize(const unsigned int& capacity);
 
 		// Convert array to string:
 		std::string toString(void) const;
@@ -96,17 +96,18 @@ class Array {
 // Default constructor:
 template <class T>
 Array<T>::Array() {
+	// Initialize member variables:
 	this->size = 0;
 	this->internalArray = NULL;
 }
 
 // Declare array with a specific length:
 template <class T>
-Array<T>::Array(unsigned int size) {
+Array<T>::Array(const unsigned int& size) {
 	// check size:
 	assert(size > 0);
 
-	// The size of an array is specified at the time of creation:
+	// Initialize member variables:
 	this->size = size;
 	this->internalArray = new T[this->size];
 
@@ -116,7 +117,7 @@ Array<T>::Array(unsigned int size) {
 
 // Initialize the array with predefined value:
 template <class T>
-Array<T>::Array(unsigned int size, T value) {
+Array<T>::Array(const unsigned int& size, const T& value) {
 	// check size:
 	assert(size > 0);
 
@@ -151,6 +152,10 @@ Array<T>::~Array() {
 // Copy assignment:
 template <class T>
 const Array<T>& Array<T>::operator=(const Array<T> &other) {
+	// If equal:
+	if(*this == other)
+		return *this;
+
 	// Free just in case sizes are not identical:
 	this->~Array();
 
@@ -162,14 +167,14 @@ const Array<T>& Array<T>::operator=(const Array<T> &other) {
 
 // Overload [] so that the array will check the index before accessing:
 template <class T>
-T& Array<T>::operator[](unsigned int index) {
+T& Array<T>::operator[](const unsigned int& index) {
 	assert(index >= 0 && index < this->size);
 	return this->internalArray[index];
 }
 
 // Overload [] for constant arrays:
 template <class T>
-const T& Array<T>::operator[](unsigned int index) const {
+const T& Array<T>::operator[](const unsigned int& index) const {
 	assert(index >= 0 && index < this->size);
 	return this->internalArray[index];
 }
@@ -199,7 +204,7 @@ bool Array<T>::operator!=(const Array<T>& other) const {
 
 // Set the length of the array, to be used with the default constructor:
 template <class T>
-void Array<T>::setLength(unsigned int size) {
+void Array<T>::setLength(const unsigned int& size) {
 	// check size:
 	assert(size > 0);
 
@@ -216,7 +221,7 @@ void Array<T>::setLength(unsigned int size) {
 
 // Resize array to new capacity:
 template <class T>
-void Array<T>::resize(unsigned int capacity) {
+void Array<T>::resize(const unsigned int& capacity) {
 	// If it is length equal to zero:
 	if(this->size == 0) {
 		setLength(capacity);
