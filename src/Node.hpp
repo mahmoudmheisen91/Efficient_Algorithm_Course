@@ -5,29 +5,42 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Generic Node class that contain data and two pointers to next and previous nodes
+ */
+
 #ifndef SRC_NODE_HPP_
 #define SRC_NODE_HPP_
 
 // Include C++ Libraries:
 #include <iostream>
 
-template <class T>
+// Default type is int:
+template <class T = int>
 class Node {
 	public:
 		// Constructors:
 		Node();
-		Node(const T data);
+		Node(const T& data);
 
-		// Copy Constructor:
+		// Copy Constructors:
 		Node(const Node& other);
+		Node(const Node* other);
 
 		// Destructor:
 		virtual ~Node();
+
+		// Equal operator:
+		Node<T>& operator=(const Node<T>& other);
 
 		// Member variables:
 		T data;
 		Node<T>* next;
 		Node<T>* previous;
+
+	private:
+		// Clone method:
+		void clone(const Node<T>& other);
 };
 
 // Constructors:
@@ -40,28 +53,55 @@ Node<T>::Node() {
 }
 
 template <class T>
-Node<T>::Node(const T data) {
+Node<T>::Node(const T& data) {
 	// Initialize:
 	this->data = data;
 	this->next = NULL;
 	this->previous = NULL;
 }
 
-// Copy Constructor:
+// Copy Constructors:
 template <class T>
 Node<T>::Node(const Node& other) {
+	// Copy:
+	clone(other);
+}
+
+template <class T>
+Node<T>::Node(const Node* other) {
+	// Copy:
+	clone(*other);
+}
+
+// Destructor:
+template <class T>
+Node<T>::~Node() {
+	// No Delete because if we deleted next we will have infinite recursive loop
+}
+
+// Equal operator:
+template<class T>
+Node<T>& Node<T>::operator=(const Node<T>& other) {
+
+	// Delete this:
+	this->~Node();
+
+	// Copy:
+	clone(other);
+
+	// Return this:
+	return *this;
+}
+
+// Clone method:
+template<class T>
+void Node<T>::clone(const Node<T>& other) {
 	// Copy:
 	this->data = other.data;
 	this->next = other.next;
 	this->previous = other.previous;
 }
 
-// Destructor:
-template <class T>
-Node<T>::~Node() {
-	// TODO: is correct?
-	// no Delete because if we deleted next we will have infinite recursive loop
-}
 
 #endif /* SRC_NODE_HPP_ */
 

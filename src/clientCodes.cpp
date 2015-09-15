@@ -25,12 +25,21 @@ using namespace std;
 #include "MaxHeapArray.hpp"
 
 void test_array_class(void) {
-	Array<int> a(4, 0);
+	Array<int> a(4, 5);
 	Array<int> c(4, 1);
 	Array<int> b(a);
+	cout << b << endl;
 	b = c;
+	cout << b << endl;
 	b[2] = 3;
 	cout << b << endl;
+	Array<int> *d;
+	d = &b;
+	cout << *d << endl;
+
+	cout << "Enter 4 int data: ";
+	cin >> c;
+	cout << c << endl;
 }
 
 void test_comparable_objects(void) {
@@ -51,18 +60,41 @@ void test_comparable_objects(void) {
 }
 
 void test_copy_operations(void) {
-	const Array<int> a(3);
-	a[0] = 0;
-	a[1] = 1;
-	a[2] = 2;
+	const Array<int> a(4, 0);
+	//a[0] = 0;
+	//a[1] = 1;
+	//a[2] = 2;
 
 	Array<> b(a);
 	Array<> c(3);
 	c = b;
+	//Array<int> *ap;
+	//a[1] = 5;
+	cout << "c " << c << "b " << b << "a " << a << sizeof(a) << endl;
 
-	a[1] = 5;
-	cout << c << b << a;
+	cout << "(c == a) " << (c == a) << endl;
+	cout << "(c != a) " << (c != a) << endl;
 
+	c[2] = 1;
+	cout << "c[2] = 1;" << endl;
+
+	cout << "(c == a) " << (c == a) << endl;
+	cout << "(c != a) " << (c != a) << endl;
+
+	cout << endl;
+	c.resize(6);
+	cout << c << endl;
+	cout << c.toString() << endl;
+
+	Array<int> d, e;
+	d.resize(3);
+
+	cout << d << endl << e.toString() << endl;
+
+	Array<int> f(4, 3);
+	cout << f << endl;
+	f.clear();
+	cout << f << endl;
 }
 
 void test_stack_array(void) {
@@ -128,10 +160,17 @@ void test_stack_array(void) {
 void test_node_class(void) {
 	Node<int>* n1 = new Node<int>;
 	Node<int>* n2 = new Node<int>(10);
-	Node<int>* n3 = new Node<int>(*n2);
+	Node<int>* n3 = new Node<int>(n2);
 
 	n3->next = n1;
 	n3->previous = n2;
+
+	Node<int> x;
+	x.data = n3->data;
+	x.next = n2;
+	x.previous = n1;
+	x = *n3;
+	cout << x.previous->data << endl;
 
 	delete n3;
 	delete n2;
