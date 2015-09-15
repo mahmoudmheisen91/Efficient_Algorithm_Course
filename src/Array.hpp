@@ -23,11 +23,8 @@ class Array {
 		// Default constructor:
 		Array(void);
 
-		// Declare array with a specific length:
-		Array(const unsigned int& size);
-
-		// Initialize the array with predefined value:
-		Array(const unsigned int& size, const T& value);
+		// Declare array with a specific length, initialize the array with predefined value:
+		Array(const unsigned int& size, const T& value = T());
 
 		// Copy constructor:
 		Array(const Array<T>& other);
@@ -94,20 +91,6 @@ Array<T>::Array(void) {
 	// Initialize member variables:
 	this->size = 0;
 	this->elements = NULL;
-}
-
-// Declare array with a specific length:
-template <class T>
-Array<T>::Array(const unsigned int& size) {
-	// check size:
-	assert(size > 0);
-
-	// Initialize member variables:
-	this->size = size;
-	this->elements = new T[this->size];
-
-	// Fill with default values, just in case if print without initialization:
-	std::fill(this->elements, this->elements + this->size, T());
 }
 
 // Initialize the array with predefined value:
