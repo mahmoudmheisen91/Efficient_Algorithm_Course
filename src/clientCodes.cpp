@@ -23,6 +23,8 @@ using namespace std;
 #include "QueueArray.hpp"
 #include "QueueNode.hpp"
 #include "MaxHeapArray.hpp"
+#include "Vector.hpp"
+#include <vector>
 
 void test_array_class(void) {
 	Array<int> a(4, 5);
@@ -488,7 +490,78 @@ void test_max_heap_array(void) {
 	//b = h1.deleteMax(); // will throw run time error because the heap is empty
 }
 
+void test_vector_class(void) {
+	Vector<int> a;
+	cout << a << endl;
+	cout << "a - Size = " << a.size() << ", Length = " << a.length() << endl << endl;
 
+	a.pushBack(4);
+	a.pushBack(2);
+	a.pushBack(0);
+	a.pushBack(2);
+	a.pushBack(-1);
+	a.pushBack(4);
+	a.pushBack(2);
+	a.pushBack(0);
+	a.pushBack(2);
+	a.pushBack(-1);
+	cout << a << endl;
+	cout << "a - Size = " << a.size() << ", Length = " << a.length() << endl << endl;
+
+	Vector<int> a111(a);
+
+	int b = a.remove(2);
+	cout << "remove: " << b << endl;
+
+	a.insert(5, 33);
+	cout << a << endl;
+	cout << "a - Size = " << a.size() << ", Length = " << a.length() << endl << endl;
+
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	b = a.popBack();
+	cout << "remove: " << b << endl;
+	cout << a << endl;
+	cout << "a - Size = " << a.size() << ", Length = " << a.length() << endl << endl;
+
+	cout << a.at(3) << endl;
+	cout << a.front() << endl;
+	cout << a.back() << endl;
+	cout << a << endl;
+	cout << "a - Size = " << a.size() << ", Length = " << a.length() << endl << endl;
+
+	a.clear();
+	cout << a << endl << endl;
+
+	const Vector<int> a1(6, 23);
+	cout << a1 << endl;
+	cout << a1.at(3) << endl;
+	cout << a1.front() << endl;
+	cout << a1.back() << endl;
+	cout << "a1 - Size = " << a1.size() << ", Length = " << a1.length() << endl << endl;
+
+	Vector<int> a11(a1);
+	cout << a11 << endl;
+	cout << a11.at(3) << endl;
+	cout << a11.front() << endl;
+	cout << a11.back() << endl;
+	cout << "a11 - Size = " << a11.size() << ", Length = " << a11.length() << endl << endl;
+
+	a11 = a111;
+	cout << a11 << endl;
+	cout << a11.at(3) << endl;
+	cout << a11.front() << endl;
+	cout << a11.back() << endl;
+	cout << "a11 - Size = " << a11.size() << ", Length = " << a11.length() << endl << endl;
+}
 
 
 
