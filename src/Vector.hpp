@@ -7,7 +7,15 @@
 
 /*
  * Vector generic class stores list of values in an array.
- * cout << "test" << endl;
+ * Has an iterator to loop through its content.
+ */
+
+/*
+ * TODO:
+ * Add constant iterator
+ * Modify >> operator to take values until it hits enter
+ * checkIndex method
+ * Work with STL sort
  */
 
 #ifndef SRC_VECTOR_HPP_
@@ -81,6 +89,9 @@ public:
 
 	// Assignment operator:
 	Vector<T>& operator=(const Vector<T>& other);
+
+	// Operator <<: to quickly add elements to the vector:
+	Vector<T>& operator<<(const T& value);
 
 	// Return the current number of elements inside the vector:
 	inline unsigned int size(void) const {
@@ -213,6 +224,11 @@ public:
         // index:
         T operator [](int k) {
             return container->elements[index + k];
+        }
+
+        int operator -(const iterator& rhs) {
+
+            return index - rhs.index;
         }
 
     private:
@@ -449,6 +465,14 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
 	return *this;
 }
 
+// Operator <<: to quickly add elements to the vector:
+template <class T>
+Vector<T>& Vector<T>::operator<<(const T& value) {
+	pushBack(value);
+
+	return *this;
+}
+
 // Clone method:
 template<class T>
 void Vector<T>::clone(const Vector<T>& other) {
@@ -492,19 +516,6 @@ std::istream& operator>>(std::istream& input, Vector<E> & other) {
 }
 
 #endif /* SRC_VECTOR_HPP_ */
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
