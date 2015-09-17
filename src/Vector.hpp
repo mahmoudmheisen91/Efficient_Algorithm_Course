@@ -21,108 +21,107 @@
 #include <stdexcept>
 
 // Include project headers:
-#include "Array.hpp"
+#include "utility.hpp"
 
 // Default type is int:
 template<class T = int>
 class Vector {
-	public:
-		// Default constructor:
-		Vector(void);
+public:
+	// Default constructor:
+	Vector(void);
 
-		// Initialize the vector with predefined size and value:
-		Vector(const unsigned int& length, const T& value = T());
+	// Initialize the vector with predefined size and value:
+	Vector(const unsigned int& length, const T& value = T());
 
-		// Copy constructor:
-		Vector(const Vector<T>& other);
+	// Copy constructor:
+	Vector(const Vector<T>& other);
 
-		// Destructor:
-		virtual ~Vector(void);
+	// Destructor:
+	virtual ~Vector(void);
 
-		// Assignment operator:
-		Vector<T>& operator=(const Vector<T>& other);
+	// Push back method:
+	void pushBack(const T& value);
 
-		// Array access operator [] for non const type:
-		T& operator[](const unsigned int& index);
+	// Pop back method:
+	T popBack(void);
 
-		// Array access operator [] for const type:
-		const T& operator[](const unsigned int& index) const;
+	// Insert method:
+	void insert(const unsigned int& index, const T& value);
 
-		// Push back method:
-		void pushBack(const T& value);
+	// Remove an element at index and shift to the left:
+	T remove(const unsigned int& index);
 
-		// TODO : &
-		// Pop back method:
-		T popBack(void) throw(std::runtime_error);
+	// Return the beginning of vector:
+	T& front(void) const;
 
-		// Insert method:
-		void insert(const unsigned int& index, const T& value);
+	// Return the end of vector:
+	T& back(void) const;
 
-		// Synonym for non const []:
-		T& at(const unsigned int& index);
+	// Clear method:
+	void clear(void);
 
-		// Synonym for const []:
-		const T& at(const unsigned int& index) const;
+	// Resize the vector to new size:
+	void resize(const unsigned int& capacity);
 
-		// Return the beginning of vector:
-		T& front(void) const throw(std::runtime_error);
+	// toString method:
+	std::string toString(void) const;
 
-		// Return the end of vector:
-		T& back(void) const throw(std::runtime_error);
+	// Synonym for non const []:
+	T& at(const unsigned int& index);
 
-		// Clear method:
-		void clear(void);
+	// Synonym for const []:
+	const T& at(const unsigned int& index) const;
 
-		// TODO: &
-		// Remove an element at index and shift to the left:
-		T remove(const unsigned int& index) throw(std::runtime_error);
+	// Array access operator [] for non const type:
+	T& operator[](const unsigned int& index);
 
-		// Resize the vector to new size:
-		void resize(const unsigned int& capacity);
+	// Array access operator [] for const type:
+	const T& operator[](const unsigned int& index) const;
 
-		// toString method:
-		std::string toString(void) const;
+	// Assignment operator:
+	Vector<T>& operator=(const Vector<T>& other);
 
-		// Return the current number of elements inside the vector:
-		inline unsigned int size(void) const {
-			return this->count;
-		}
+	// Return the current number of elements inside the vector:
+	inline unsigned int size(void) const {
+		return this->count;
+	}
 
-		// Return the length of vector:
-		inline unsigned int length(void) const {
-			return this->capacity;
-		}
+	// Return the length of vector:
+	inline unsigned int length(void) const {
+		return this->capacity;
+	}
 
-		// isEmpty method:
-		inline bool isEmpty(void) const {
-			return size() == 0;
-		}
+	// isEmpty method:
+	inline bool isEmpty(void) const {
+		return size() == 0;
+	}
 
-	private:
-		// Inner array:
-		T* elements;
+private:
+	// Inner array:
+	T* elements;
 
-		// Length of inner array:
-		unsigned int capacity;
+	// Length of inner array:
+	unsigned int capacity;
 
-		// Current number of elements inside the vector:
-		unsigned int count;
+	// Current number of elements inside the vector:
+	unsigned int count;
 
-		// Clone method:
-		void clone(const Vector<T>& other);
+	// Clone method:
+	void clone(const Vector<T>& other);
 
-		// isFull method:
-		inline bool isFull(void) const {
-			return size() == length();
-		}
+	// isFull method:
+	inline bool isFull(void) const {
+		return size() == this->capacity;
+	}
 
-	// Write data to command line:
-	template<class E>
-	friend std::ostream& operator<<(std::ostream& output, const Vector<E>& other);
+// Write data to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const Vector<E>& other);
 
-	// Read data from command line:
-	template<class E>
-	friend std::istream& operator>>(std::istream& input, Vector<E> & other);
+// Read data from command line:
+template<class E>
+friend std::istream& operator>>(std::istream& input, Vector<E> & other);
+
 };
 
 // Default constructor:
@@ -130,8 +129,8 @@ template<class T>
 Vector<T>::Vector(void) {
 	// Initialization:
 	this->count = 0;
-	this->capacity = 0;
-	this->elements = NULL;
+	this->capacity = 1;
+	this->elements = new T[this->capacity];
 }
 
 // Initialize the vector with predefined size and value:
@@ -165,36 +164,6 @@ Vector<T>::~Vector(void) {
 	}
 }
 
-// Assignment operator:
-template<class T>
-Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
-	// Delete this before:
-	this->~Vector();
-
-	// Copy:
-	clone(other);
-}
-
-// Array access operator [] for non const type:
-template<class T>
-T& Vector<T>::operator[](const unsigned int& index) {
-	// Check the index:
-	assert(index >= 0 && index < this->count);
-
-	// Return:
-	return this->elements[index];
-}
-
-// Array access operator [] for const type:
-template<class T>
-const T& Vector<T>::operator[](const unsigned int& index) const {
-	// Check the index:
-	assert(index >= 0 && index < this->count);
-
-	// Return:
-	return this->elements[index];
-}
-
 // Push back method:
 template<class T>
 void Vector<T>::pushBack(const T& value) {
@@ -203,7 +172,7 @@ void Vector<T>::pushBack(const T& value) {
 
 // Pop back method:
 template<class T>
-T Vector<T>::popBack(void) throw(std::runtime_error) {
+T Vector<T>::popBack(void) {
 	return remove(count-1);
 }
 
@@ -221,36 +190,36 @@ void Vector<T>::insert(const unsigned int& index, const T& value) {
 	this->count++;
 }
 
-// Acronym for non const []:
-template<class T>
-T& Vector<T>::at(const unsigned int& index) {
-	return this->operator [](index);
-}
+// Remove an element at index and shift to the left:
+template <class T>
+T Vector<T>::remove(const unsigned int& index) {
+	// Check the index:
+	assert(index >= 0 && index < this->count);
+    error(isEmpty(), "The vector is Empty");
 
-// Acronym for const []:
-template<class T>
-const T& Vector<T>::at(const unsigned int& index) const {
-	return this->operator [](index);
+	T temp = this->elements[index];
+	for(int i = index; i < count; i++) {
+		this->elements[i] = this->elements[i + 1];
+	}
+
+	this->count--;
+	return temp;
 }
 
 // Return the beginning of vector:
 template<class T>
-T& Vector<T>::front(void) const throw(std::runtime_error) {
+T& Vector<T>::front(void) const {
 	// Test if empty:
-    if(isEmpty()) {
-    	throw std::runtime_error("The vector is Empty");
-    }
+	error(isEmpty(), "The vector is Empty");
 
 	return this->elements[0];
 }
 
 // Return the end of vector:
 template<class T>
-T& Vector<T>::back(void) const throw(std::runtime_error) {
+T& Vector<T>::back(void) const {
 	// Test if empty:
-    if(isEmpty()) {
-    	throw std::runtime_error("The vector is Empty");
-    }
+	error(isEmpty(), "The vector is Empty");
 
 	return this->elements[count-1];
 }
@@ -263,28 +232,8 @@ void Vector<T>::clear(void) {
 
 	// Initialize:
 	this->count = 0;
-	this->capacity = 0;
-	this->elements = NULL;
-}
-
-// Remove an element at index and shift to the left:
-template <class T>
-T Vector<T>::remove(const unsigned int& index) throw(std::runtime_error) {
-	// Check the index:
-	assert(index >= 0 && index < this->count);
-
-	// Test if empty:
-    if(isEmpty()) {
-    	throw std::runtime_error("The vector is Empty");
-    }
-
-	T temp = this->elements[index];
-	for(int i = index; i < count; i++) {
-		this->elements[i] = this->elements[i + 1];
-	}
-
-	this->count--;
-	return temp;
+	this->capacity = 1;
+	this->elements = new T[this->capacity];
 }
 
 // Resize the vector to new size:
@@ -320,6 +269,49 @@ std::string Vector<T>::toString(void) const {
 
     // Transform the string stream to string:
     return oss.str();
+}
+
+// Acronym for non const []:
+template<class T>
+T& Vector<T>::at(const unsigned int& index) {
+	return this->operator [](index);
+}
+
+// Acronym for const []:
+template<class T>
+const T& Vector<T>::at(const unsigned int& index) const {
+	return this->operator [](index);
+}
+
+// Array access operator [] for non const type:
+template<class T>
+T& Vector<T>::operator[](const unsigned int& index) {
+	// Check the index:
+	assert(index >= 0 && index < this->count);
+
+	// Return:
+	return this->elements[index];
+}
+
+// Array access operator [] for const type:
+template<class T>
+const T& Vector<T>::operator[](const unsigned int& index) const {
+	// Check the index:
+	assert(index >= 0 && index < this->count);
+
+	// Return:
+	return this->elements[index];
+}
+
+// Assignment operator:
+template<class T>
+Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
+	// Delete this before:
+	this->~Vector();
+
+	// Copy:
+	clone(other);
+	return *this;
 }
 
 // Clone method:

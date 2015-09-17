@@ -29,7 +29,8 @@ int main(void) {
 //	test_queue_array();
 //	test_queue_node();
 //	test_max_heap_array();
-	test_vector_class();
+//	test_vector_class();
+	test_vector_class2();
 
 	return 0;
 }
