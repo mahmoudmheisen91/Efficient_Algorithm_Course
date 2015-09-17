@@ -5,198 +5,170 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Array based Stack, resizable array:
+ * Double the size when full, half the size when quarter full
+ * Resizing operation has an amortized time of O(1)
+ */
+
+/*
+ * TODO:
+ * cin >> s; and s has zero length - Read data from command line:
+ */
+
 #ifndef SRC_STACKARRAY_HPP_
 #define SRC_STACKARRAY_HPP_
 
 // Include C++ Libraries:
 #include <iostream>
-#include <stdexcept>
+#include <sstream>
+#include <string>
 
 // Include project headers:
-#include "Array.hpp"
+#include "Vector.hpp"
+#include "utility.hpp"
 
-// Array based Stack, resizable array:
-// Resizing operation has an amortized time of O(1)
-template <class T>
+// Default type is int:
+template <class T = int>
 class StackArray {
-	public:
-		// Constructor:
-		StackArray();
+public:
+	// Constructor:
+	StackArray();
 
-		// Copy Constructor:
-		StackArray(const StackArray& other);
+	// Copy Constructor:
+	StackArray(const StackArray& other);
 
-		// Destructor:
-		virtual ~StackArray();
+	// Destructor:
+	virtual ~StackArray();
 
-		// Push element at the top of the stack:
-		void push(T element);
+	// Push element at the top of the stack:
+	void push(const T& element);
 
-		// Pop element from the top of the stack:
-		T pop() throw(runtime_error);
+	// Pop element from the top of the stack:
+	T pop();
 
-		// Return the top of the stack without removing it:
-		T top() const throw(runtime_error);
+	// Return the top of the stack without removing it:
+	T top() const;
 
-		// Return current number of elements in the stack:
-		int size() const;
+	// toString method:
+	std::string toString() const;
 
-		// Return the length of the stack:
-		int length() const;
+	// Operator <<: to quickly add elements to the stack:
+	StackArray<T>& operator<<(const T& value);
 
-		// isEmpty method:
-		bool isEmpty() const;
+	// Operator >>: to quickly remove elements from the stack:
+	StackArray<T>& operator>>(T& value);
 
-		// isFull method:
-		bool isFull() const;
+	// Return current number of elements in the stack:
+	inline unsigned int size() const {
+		return elements.size();
+	}
 
-		// toString method:
-		void toString() const;
+	// isEmpty method:
+	inline bool isEmpty() const {
+		return elements.isEmpty();
+	}
 
-	private:
-		// Member variables:
-		Array<T> backingArray;
-		int currentSize;
+private:
+	// Member variables:
+	Vector<T> elements;
 
-		// Resize method:
-		void resize(int capacity);
+	inline bool quarterFull(void) const {
+		return elements.size() == elements.length() / 4;
+	}
+
+// Write data to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const StackArray<E>& other);
+
 };
 
 // Constructor:
 template <class T>
 StackArray<T>::StackArray() {
-	// Set current number of elements to zero:
-	this->currentSize = 0;
-
-	// Set array length to 1:
-	backingArray.setLength(1);
 }
 
 // Copy Constructor:
 template <class T>
-StackArray<T>::StackArray(const StackArray& other)
-:currentSize(other.currentSize)
-{
-	this->backingArray = other.backingArray;
+StackArray<T>::StackArray(const StackArray& other) {
+	this->elements = other.elements;
 }
 
 // Destructor:
 template <class T>
 StackArray<T>::~StackArray() {
-	// TODO: is this correct? no pointers!!!
-	// Clear the stack:
-	currentSize = 0;
-	backingArray.~Array();
 }
 
 // Push element at the top of the stack:
 template <class T>
-void StackArray<T>::push(T element) {
-	// If the array is full, double its size:
-	if(isFull())
-		resize(2 * backingArray.length);
-
-	// Add the element and increase the current size:
-	this->backingArray[currentSize++] = element;
+void StackArray<T>::push(const T& element) {
+	// Add the element and increase the current size, vector will double its size automatically:
+	elements << element;
 }
 
 // Pop element from the top of the stack:
 template <class T>
-T StackArray<T>::pop() throw(runtime_error) {
+T StackArray<T>::pop() {
 	// If empty throw runtime error:
-	if(isEmpty())
-		throw runtime_error("Stack underflow");
+	Error(isEmpty(), "Stack Underflow");
 
-	// TODO: the last element is still their but we are not pointing to it:
 	// Decrease the current size and return the element:
-	T item = this->backingArray[--currentSize];
+	T item = elements.popBack();
 
-	// If the array is quarter full cut the size to half:
-	if(this->currentSize == backingArray.length / 4)
-		resize(backingArray.length / 2);
+	// If the array is quarter full cut the length to half:
+	if(quarterFull()) elements.resize(elements.length() / 2);
 
-	// Return the element:
 	return item;
 }
 
 // Return the top of the stack without removing it:
 template <class T>
-T StackArray<T>::top() const throw(runtime_error) {
+T StackArray<T>::top() const {
 	// If empty throw runtime error:
-	if(isEmpty())
-		throw runtime_error("Stack underflow");
+	Error(isEmpty(), "Stack Underflow");
 
-	// Return the top of the stack:
-	return this->backingArray[currentSize-1];
-}
-
-// Return current number of elements in the stack:
-template <class T>
-int StackArray<T>::size() const {
-	return this->currentSize;
-}
-
-// Return the length of the stack:
-template <class T>
-int StackArray<T>::length() const {
-	return backingArray.length;
-}
-
-// isEmpty method:
-template <class T>
-bool StackArray<T>::isEmpty() const {
-	return this->currentSize == 0;
-}
-
-// isFull method:
-template <class T>
-bool StackArray<T>::isFull() const {
-	return this->currentSize == backingArray.length;
+	return elements.back();
 }
 
 // toString method:
 template <class T>
-void StackArray<T>::toString() const {
-	// If the stack is empty:
-	if(isEmpty()) {
-		std::cout << "The stack is empty" << std::endl;
-		return;
-	}
+std::string StackArray<T>::toString() const {
+	// Make an output string stream and insert this into it:
+    std::ostringstream oss;
+    oss << *this;
 
-	// Print:
-	for(int i = 0; i < this->currentSize; i++) {
-		std::cout << backingArray[i] << " ";
-	}
-	std::cout << std::endl;
+    // Transform the string stream to string:
+    return oss.str();
 }
 
-// Resize method:
-template <class T>
-void StackArray<T>::resize(int capacity) {
-	// New array with the new length:
-	Array<T> copy(capacity);
+// Operator <<: to quickly add elements to the stack:
+template<class T>
+StackArray<T>& StackArray<T>::operator<<(const T& value) {
+	this->elements << value;
+	return *this;
+}
 
-	// Copying to new array:
-	for(int i = 0; i < this->currentSize; i++)
-		copy[i] = this->backingArray[i];
+// Operator >>: to quickly remove elements from the stack:
+template<class T>
+StackArray<T>& StackArray<T>::operator>>(T& value) {
+	value = pop();
+	return *this;
+}
 
-	// TODO: copying twice:
-	// Copying back to the backing array:
-	this->backingArray = copy;
+// Write data to command line:
+template<class E>
+std::ostream& operator<<(std::ostream& output, const StackArray<E>& other) {
+	// Check if Empty:
+	if(other.isEmpty()) {
+		output << "The stack is empty" ;
+		return output;
+	}
+
+	output << other.elements;
+	return output;
 }
 
 #endif /* SRC_STACKARRAY_HPP_ */
-
-
-
-
-
-
-
-
-
-
-
 
 
 
