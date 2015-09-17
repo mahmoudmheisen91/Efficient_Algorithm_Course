@@ -7,6 +7,7 @@
 
 /*
  * Array based Stack, resizable array:
+ * a collection that processes values in a last-in/first-out (LIFO) order.
  * Double the size when full, half the size when quarter full
  * Resizing operation has an amortized time of O(1)
  */
@@ -14,6 +15,8 @@
 /*
  * TODO:
  * cin >> s; and s has zero length - Read data from command line:
+ * Add const iterator
+ * Work with STL sort
  */
 
 #ifndef SRC_STACKARRAY_HPP_
@@ -39,19 +42,19 @@ public:
 	StackArray(const StackArray& other);
 
 	// Destructor:
-	virtual ~StackArray();
+	virtual ~StackArray(void);
 
 	// Push element at the top of the stack:
 	void push(const T& element);
 
 	// Pop element from the top of the stack:
-	T pop();
+	T pop(void);
 
 	// Return the top of the stack without removing it:
-	T top() const;
+	T top(void) const;
 
 	// toString method:
-	std::string toString() const;
+	std::string toString(void) const;
 
 	// Operator <<: to quickly add elements to the stack:
 	StackArray<T>& operator<<(const T& value);
@@ -60,14 +63,31 @@ public:
 	StackArray<T>& operator>>(T& value);
 
 	// Return current number of elements in the stack:
-	inline unsigned int size() const {
+	inline unsigned int size(void) const {
 		return elements.size();
 	}
 
 	// isEmpty method:
-	inline bool isEmpty() const {
+	inline bool isEmpty(void) const {
 		return elements.isEmpty();
 	}
+
+	// Random access iterator to loop through the stack:
+	class iterator : public Vector<T>::iterator {
+	public:
+		iterator() : Vector<T>::iterator() {}
+		iterator(const typename Vector<T>::iterator& it) : Vector<T>::iterator(it) {}
+	};
+
+    // Iterator that return the beginning of the stack:
+    iterator begin(void) const {
+        return iterator(elements.begin());
+    }
+
+    // Iterator that return the end of the stack:
+    iterator end(void) const {
+        return iterator(elements.end());
+    }
 
 private:
 	// Member variables:
@@ -96,7 +116,7 @@ StackArray<T>::StackArray(const StackArray& other) {
 
 // Destructor:
 template <class T>
-StackArray<T>::~StackArray() {
+StackArray<T>::~StackArray(void) {
 }
 
 // Push element at the top of the stack:
@@ -108,7 +128,7 @@ void StackArray<T>::push(const T& element) {
 
 // Pop element from the top of the stack:
 template <class T>
-T StackArray<T>::pop() {
+T StackArray<T>::pop(void) {
 	// If empty throw runtime error:
 	Error(isEmpty(), "Stack Underflow");
 
@@ -123,7 +143,7 @@ T StackArray<T>::pop() {
 
 // Return the top of the stack without removing it:
 template <class T>
-T StackArray<T>::top() const {
+T StackArray<T>::top(void) const {
 	// If empty throw runtime error:
 	Error(isEmpty(), "Stack Underflow");
 
@@ -132,7 +152,7 @@ T StackArray<T>::top() const {
 
 // toString method:
 template <class T>
-std::string StackArray<T>::toString() const {
+std::string StackArray<T>::toString(void) const {
 	// Make an output string stream and insert this into it:
     std::ostringstream oss;
     oss << *this;
@@ -164,8 +184,7 @@ std::ostream& operator<<(std::ostream& output, const StackArray<E>& other) {
 		return output;
 	}
 
-	output << other.elements;
-	return output;
+	return output << other.elements;
 }
 
 #endif /* SRC_STACKARRAY_HPP_ */
