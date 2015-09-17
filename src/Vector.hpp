@@ -19,6 +19,7 @@
 #include <sstream>
 #include <cassert>
 #include <stdexcept>
+#include <iterator>
 
 // Include project headers:
 #include "utility.hpp"
@@ -95,6 +96,140 @@ public:
 	inline bool isEmpty(void) const {
 		return size() == 0;
 	}
+
+	// Random access iterator to loop through the vector:
+    class iterator : public std::iterator<std::random_access_iterator_tag, T> {
+
+    public:
+    	// Constructor:
+        iterator() {
+            this->container = NULL;
+            this->index = 0;
+        }
+
+        // Copy constructor:
+        iterator(const iterator& it) {
+            this->container = it.container;
+            this->index = it.index;
+        }
+
+        // Assignment constructor:
+        iterator(const Vector* vp, int index) {
+            this->container = vp;
+            this->index = index;
+        }
+
+        // Destructor:
+        virtual ~iterator() {
+        	// TODO: Why:
+        	// Empty:
+        }
+
+        // Pre ++ advance to next element:
+        iterator& operator ++() {
+            index++;
+            return *this;
+        }
+
+        // Post ++ advance to next element:
+        iterator operator ++(int) {
+            iterator copy(*this);
+            operator++();
+            return copy;
+        }
+
+        // Pre -- advance to previous element:
+        iterator& operator --() {
+            index--;
+            return *this;
+        }
+
+        // Post -- advance to previous element:
+        iterator operator --(int) {
+            iterator copy(*this);
+            operator--();
+            return copy;
+        }
+
+        // Compare operators:
+        bool operator ==(const iterator& rhs) {
+            return container == rhs.container && index == rhs.index;
+        }
+
+        bool operator !=(const iterator& rhs) {
+            return !(*this == rhs);
+        }
+
+        bool operator <(const iterator& rhs) {
+        	Error(container != rhs.container, "Vector Iterator::operator <: Iterators are in different vectors");
+            return index < rhs.index;
+        }
+
+        bool operator <=(const iterator& rhs) {
+        	Error(container != rhs.container, "Vector Iterator::operator <=: Iterators are in different vectors");
+            return index <= rhs.index;
+        }
+
+        bool operator >(const iterator& rhs) {
+        	Error(container != rhs.container, "Vector Iterator::operator >: Iterators are in different vectors");
+            return index > rhs.index;
+        }
+
+        bool operator >=(const iterator& rhs) {
+        	Error(container != rhs.container, "Vector Iterator::operator >=: Iterators are in different vectors");
+            return index >= rhs.index;
+        }
+
+        // Advance to next:
+        iterator operator +(const int& rhs) {
+            return iterator(container, index + rhs);
+        }
+
+        iterator operator +=(const int& rhs) {
+            index += rhs;
+            return *this;
+        }
+
+        iterator operator -(const int& rhs) {
+            return iterator(container, index - rhs);
+        }
+
+        // Advance to previous:
+        iterator operator -=(const int& rhs) {
+            index -= rhs;
+            return *this;
+        }
+
+        // Dereference:
+        T operator *() {
+            return container->elements[index];
+        }
+
+        // Access:
+        T* operator ->() {
+            return &container->elements[index];
+        }
+
+        // index:
+        T operator [](int k) {
+            return container->elements[index + k];
+        }
+
+    private:
+        const Vector* container;
+        int index;
+
+    };
+
+    // Iterator that return the beginning of vector:
+    iterator begin() const {
+        return iterator(this, 0);
+    }
+
+    // Iterator that return the end of vector:
+    iterator end() const {
+        return iterator(this, count);
+    }
 
 private:
 	// Inner array:
@@ -195,7 +330,7 @@ template <class T>
 T Vector<T>::remove(const unsigned int& index) {
 	// Check the index:
 	assert(index >= 0 && index < this->count);
-    error(isEmpty(), "The vector is Empty");
+    Error(isEmpty(), "The vector is Empty");
 
 	T temp = this->elements[index];
 	for(int i = index; i < count; i++) {
@@ -210,7 +345,7 @@ T Vector<T>::remove(const unsigned int& index) {
 template<class T>
 T& Vector<T>::front(void) const {
 	// Test if empty:
-	error(isEmpty(), "The vector is Empty");
+	Error(isEmpty(), "The vector is Empty");
 
 	return this->elements[0];
 }
@@ -219,7 +354,7 @@ T& Vector<T>::front(void) const {
 template<class T>
 T& Vector<T>::back(void) const {
 	// Test if empty:
-	error(isEmpty(), "The vector is Empty");
+	Error(isEmpty(), "The vector is Empty");
 
 	return this->elements[count-1];
 }
