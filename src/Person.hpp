@@ -26,9 +26,9 @@ class Person : virtual public ComparableInterface<Person> {
 		virtual ~Person();
 
 		// overloaded compare method methods:
-		bool operator>(const Person& other);
-		bool operator<(const Person& other);
-		bool operator==(const Person& other);
+		bool operator>(const Person& other) const;
+		bool operator<(const Person& other) const;
+		bool operator==(const Person& other) const;
 
 		// getters and setters:
 		int getAge() const;
@@ -42,7 +42,7 @@ class Person : virtual public ComparableInterface<Person> {
 		string name;
 
 		// interface implementation:
-		int compareTo(const Person& item);
+		int compareTo(const Person& item) const;
 
 	// overloaded output stream:
 	friend ostream& operator<<(ostream& os, const Person& that);

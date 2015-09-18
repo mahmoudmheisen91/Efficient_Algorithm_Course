@@ -48,7 +48,7 @@ void Insertion::sort(Array<E> &array, Order isAscend) {
 // Test if the array it is sorted:
 template <class E>
 bool Insertion::isSorted(const Array<E> &array, Order isAscend) {
-	for(int i = 0; i < array.length-1; i++) {
+	for(int i = 0; i < array.length()-1; i++) {
 
 		if(isAscend == ASCEND && array[i] > array[i+1]) {
 			return false;
@@ -66,7 +66,7 @@ bool Insertion::isSorted(const Array<E> &array, Order isAscend) {
 template <class E>
 void Insertion::sortAscend(Array<E> &array) {
 	// first element is considered to be sorted:
-	for(int i = 1; i < array.length; i++) {
+	for(int i = 1; i < array.length(); i++) {
 		// every element before i is sorted:
 		E key = array[i];
 
@@ -85,7 +85,7 @@ void Insertion::sortAscend(Array<E> &array) {
 template <class E>
 void Insertion::sortDescend(Array<E> &array) {
 	// first element is considered to be sorted:
-	for(int i = 1; i < array.length; i++) {
+	for(int i = 1; i < array.length(); i++) {
 		// every element before i is sorted:
 		E key = array[i];
 

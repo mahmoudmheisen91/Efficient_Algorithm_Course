@@ -24,20 +24,20 @@ Person::~Person() {
 }
 
 // overloaded compare method methods:
-bool Person::operator>(const Person& other) {
+bool Person::operator>(const Person& other) const {
 	return this->compareTo(other) > 0;
 }
 
-bool Person::operator<(const Person& other) {
+bool Person::operator<(const Person& other) const {
 	return this->compareTo(other) < 0;
 }
 
-bool Person::operator==(const Person& other) {
+bool Person::operator==(const Person& other) const {
 	return this->compareTo(other) == 0;
 }
 
 // interface implementation:
-int Person::compareTo(const Person& item) {
+int Person::compareTo(const Person& item) const {
 	if (this->age > item.age) return 1;
 	if (this->age < item.age) return -1;
 	return 0;

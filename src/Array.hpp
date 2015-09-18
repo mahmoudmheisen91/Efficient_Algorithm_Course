@@ -5,6 +5,13 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Array generic class stores list of values in an array.
+ * the array keep track of its size
+ * has a method to resize it
+ * can check the index
+ */
+
 #ifndef ARRAY_HPP_
 #define ARRAY_HPP_
 
@@ -200,6 +207,9 @@ void Array<T>::setLength(const unsigned int& size) {
 // Resize array to new capacity:
 template <class T>
 void Array<T>::resize(const unsigned int& capacity) {
+	// TODO: Check capacity:
+	// TODO: if the the new size is smaller:
+
 	// If it is length equal to zero:
 	if(this->size == 0) {
 		setLength(capacity);

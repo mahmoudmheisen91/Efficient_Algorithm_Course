@@ -21,7 +21,7 @@ class ComparableInterface {
 		virtual ~ComparableInterface() {};
 
 		// Interface API:
-		virtual int compareTo(const T& item) = 0;
+		virtual int compareTo(const T& item) const = 0;
 
 };
 

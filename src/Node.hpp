@@ -18,29 +18,29 @@
 // Default type is int:
 template <class T = int>
 class Node {
-	public:
-		// Constructors:
-		Node();
-		Node(const T& data);
+public:
+	// Constructors:
+	Node();
+	Node(const T& data);
 
-		// Copy Constructors:
-		Node(const Node& other);
-		Node(const Node* other);
+	// Copy Constructors:
+	Node(const Node& other);
+	Node(const Node* other);
 
-		// Destructor:
-		virtual ~Node();
+	// Destructor:
+	virtual ~Node(void);
 
-		// Equal operator:
-		Node<T>& operator=(const Node<T>& other);
+	// Equal operator:
+	Node<T>& operator=(const Node<T>& other);
 
-		// Member variables:
-		T data;
-		Node<T>* next;
-		Node<T>* previous;
+	// Member variables:
+	T data;
+	Node<T>* next;
+	Node<T>* previous;
 
-	private:
-		// Clone method:
-		void clone(const Node<T>& other);
+private:
+	// Clone method:
+	void clone(const Node<T>& other);
 };
 
 // Constructors:
@@ -75,21 +75,18 @@ Node<T>::Node(const Node* other) {
 
 // Destructor:
 template <class T>
-Node<T>::~Node() {
+Node<T>::~Node(void) {
 	// No Delete because if we deleted next we will have infinite recursive loop
 }
 
 // Equal operator:
 template<class T>
 Node<T>& Node<T>::operator=(const Node<T>& other) {
-
 	// Delete this:
 	this->~Node();
 
 	// Copy:
 	clone(other);
-
-	// Return this:
 	return *this;
 }
 
