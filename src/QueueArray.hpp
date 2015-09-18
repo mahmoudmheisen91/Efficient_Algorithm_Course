@@ -5,238 +5,204 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Array based Queue, resizable array:
+ * a collection that processes values in a first-in/first-out (FIFO) order.
+ * Double the size when full, half the size when quarter full
+ * Resizing operation has an amortized time of O(1)
+ */
+
+/*
+ * TODO:
+ * cin >> s; and s has zero length - Read data from command line:
+ * Add const iterator
+ * Work with STL sort
+ * implement it as a ring
+ * dequeue takes O(N)
+ * Add clear method - also for stack
+ * Add = operator - also for stack
+ */
+
 #ifndef SRC_QUEUEARRAY_HPP_
 #define SRC_QUEUEARRAY_HPP_
 
 // Include C++ Libraries:
 #include <iostream>
-#include <stdexcept>
+#include <sstream>
+#include <string>
 
 // Include project headers:
-#include "Array.hpp"
+#include "Vector.hpp"
+#include "utility.hpp"
 
 // Array based Queue, resizable array:
 // Resizing operation has an amortized time of O(1)
 template <class T>
 class QueueArray {
+public:
+	// Constructor:
+	QueueArray();
+
+	// Copy Constructor:
+	QueueArray(const QueueArray& other);
+
+	// Destructor:
+	virtual ~QueueArray(void);
+
+	// Enqueue element at the top of the queue:
+	void enqueue(T element);
+
+	// Dequeue element from the end of the queue:
+	T dequeue(void);
+
+	// Return the top of the queue without removing it:
+	T top(void);
+
+	// Return the back of the queue without removing it:
+	T back(void);
+
+	// toString method:
+	std::string toString(void) const;
+
+	// Operator <<: to quickly add elements to the queue:
+	QueueArray<T>& operator<<(const T& value);
+
+	// Operator >>: to quickly remove elements from the queue:
+	QueueArray<T>& operator>>(T& value);
+
+	// Return current number of elements in the queue:
+	unsigned int size(void) const {
+		return elements.size();
+	}
+
+	// isEmpty method:
+	bool isEmpty(void) const {
+		return elements.isEmpty();
+	}
+
+	// Random access iterator to loop through the queue:
+	class iterator : public Vector<T>::iterator {
 	public:
-		// Constructor:
-		QueueArray();
+		iterator() : Vector<T>::iterator() {}
+		iterator(const typename Vector<T>::iterator& it) : Vector<T>::iterator(it) {}
+	};
 
-		// Copy Constructor:
-		QueueArray(const QueueArray& other);
+    // Iterator that return the beginning of the queue:
+    iterator begin(void) const {
+        return iterator(elements.begin());
+    }
 
-		// Destructor:
-		virtual ~QueueArray();
+    // Iterator that return the end of the queue:
+    iterator end(void) const {
+        return iterator(elements.end());
+    }
 
-		// Assignment operator:
-		QueueArray<T>& operator=(const QueueArray<T>& other);
+private:
+	// Member variables:
+	Vector<T> elements;
 
-		// Enqueue element at the top of the queue:
-		void enqueue(T element);
+	// Quarter full method:
+	inline bool quarterFull(void) const {
+		return elements.size() == elements.length() / 4;
+	}
 
-		// Dequeue element from the end of the queue:
-		T dequeue() throw(std::runtime_error);
+// Write data to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const QueueArray<E>& other);
 
-		// Return the top of the queue without removing it:
-		T top() const throw(std::runtime_error);
-
-		// Return current number of elements in the queue:
-		int size() const;
-
-		// isEmpty method:
-		bool isEmpty() const;
-
-		// toString method:
-		void toString() const;
-
-	private:
-		// Member variables:
-		int begin, end;
-		int currentSize;
-		Array<T> backingArray;
-
-		// Return the length of the queue:
-		int length() const;
-
-		// isFull method:
-		bool isFull() const;
-
-		// Resize method:
-		void resize(int capacity);
-
-		// Clone method:
-		void clone(const QueueArray<T>& other);
-
-		// TODO: overload <<
 };
 
 // Constructor:
 template <class T>
 QueueArray<T>::QueueArray() {
-	// Set current number of elements to zero:
-	this->currentSize = 0;
-
-	// Pointers to the beginning and end of queue:
-	this->end = 0;
-	this->begin = 0;
-
-	// Set array length to 1:
-	backingArray.setLength(1);
 }
 
 // Copy Constructor:
 template <class T>
 QueueArray<T>::QueueArray(const QueueArray& other) {
-
-	// Copy:
-	clone(other);
+	this->elements = other.elements;
 }
 
 // Destructor:
 template <class T>
-QueueArray<T>::~QueueArray() {
-	// TODO: is this correct? no pointers!!!
-	// Clear the stack:
-	this->end = 0;
-	this->begin = 0;
-	this->currentSize = 0;
-	this->backingArray.~Array();
-}
-
-// Assignment operator:
-template <class T>
-QueueArray<T>& QueueArray<T>::operator=(const QueueArray<T>& other) {
-	// Delete previous queue:
-	this->~QueueArray();
-
-	// Copy:
-	clone(other);
-
-	// Return:
-	return *this;
+QueueArray<T>::~QueueArray(void) {
 }
 
 // Enqueue element at the top of the queue:
 template <class T>
 void QueueArray<T>::enqueue(T element) {
-	// If the array is full, double its size:
-	if(isFull())
-		resize(2 * backingArray.length);
-
-	// Add the element to the end and increment end:
-	this->backingArray[this->end++] = element;
-
-	// Increase the current size:
-	this->currentSize++;
+	// Add the element and increase the current size, vector will double its size automatically:
+	elements << element;
 }
 
 // Dequeue element from the end of the queue:
 template <class T>
-T QueueArray<T>::dequeue() throw(std::runtime_error) {
+T QueueArray<T>::dequeue(void) {
 	// If empty throw runtime error:
-	if(isEmpty())
-		throw std::runtime_error("Queue is Empty");
+	Error(isEmpty(), "Queue is Empty");
 
-	// TODO: the element is still their but we are not pointing to it:
-	// Increment the begin pointer and save the element:
-	T item = this->backingArray[begin++];
+	// Decrease the current size and return the element:
+	T item = elements.remove(0);
 
-	// Decrease the current size:
-	this->currentSize--;
+	// If the array is quarter full cut the length to half:
+	if(quarterFull()) elements.resize(elements.length() / 2);
 
-	// If the array is quarter full cut the size to half:
-	if(this->currentSize == backingArray.length / 4)
-		resize(backingArray.length / 2);
-
-	// Return the element:
 	return item;
 }
 
 // Return the top of the queue without removing it:
 template <class T>
-T QueueArray<T>::top() const throw(std::runtime_error) {
+T QueueArray<T>::top(void) {
 	// If empty throw runtime error:
-	if(isEmpty())
-		throw std::runtime_error("Queue is Empty");
+	Error(isEmpty(), "Queue is Empty");
 
-	// Return the top of the queue:
-	return this->backingArray[begin];
+	return elements.front();
 }
 
-// Return current number of elements in the queue:
+// Return the back of the queue without removing it:
 template <class T>
-int QueueArray<T>::size() const {
-	return this->currentSize;
-}
+T QueueArray<T>::back(void) {
+	// If empty throw runtime error:
+	Error(isEmpty(), "Queue is Empty");
 
-// isEmpty method:
-template <class T>
-bool QueueArray<T>::isEmpty() const {
-	return this->currentSize == 0;
+	return elements.back();
 }
 
 // toString method:
 template <class T>
-void QueueArray<T>::toString() const {
-	// If the queue is empty:
-	if(isEmpty()) {
-		std::cout << "The Queue is empty" << std::endl;
-		return;
+std::string QueueArray<T>::toString(void) const {
+	// Make an output string stream and insert this into it:
+    std::ostringstream oss;
+    oss << *this;
+
+    // Transform the string stream to string:
+    return oss.str();
+}
+
+// Operator <<: to quickly add elements to the queue:
+template<class T>
+QueueArray<T>& QueueArray<T>::operator<<(const T& value) {
+	this->elements << value;
+	return *this;
+}
+
+// Operator >>: to quickly remove elements from the queue:
+template<class T>
+QueueArray<T>& QueueArray<T>::operator>>(T& value) {
+	value = dequeue();
+	return *this;
+}
+
+// Write data to command line:
+template<class E>
+std::ostream& operator<<(std::ostream& output, const QueueArray<E>& other) {
+	// Check if Empty:
+	if(other.isEmpty()) {
+		output << "The queue is empty" ;
+		return output;
 	}
 
-	// Print:
-	for(int i = this->begin; i < this->end; i++) {
-		std::cout << backingArray[i] << " ";
-	}
-	std::cout << std::endl;
-}
-
-// Return the length of the queue:
-template <class T>
-int QueueArray<T>::length() const {
-	return backingArray.length;
-}
-
-// isFull method:
-template <class T>
-bool QueueArray<T>::isFull() const {
-	return size() == length();
-}
-
-// Resize method:
-template <class T>
-void QueueArray<T>::resize(int capacity) {
-	// New array with the new length:
-	Array<T> copy(capacity);
-
-	// Copying to new array:
-	int j = 0;
-	for(int i = this->begin; i < this->end; i++) {
-		copy[j] = this->backingArray[i];
-		j++;
-	}
-
-	// Set begin pointer back to zero:
-	this->begin = 0;
-
-	// If resizing to smaller size, set the end pointer to the current size:
-	if(capacity <= end)
-		this->end = currentSize;
-
-	// TODO: copying twice:
-	// Copying back to the backing array:
-	this->backingArray = copy;
-}
-
-// Clone method:
-template <class T>
-void QueueArray<T>::clone(const QueueArray<T>& other) {
-	// Copy member variables:
-	this->begin = other.begin;
-	this->end = other.end;
-	this->currentSize = other.currentSize;
-	this->backingArray = other.backingArray;
+	return output << other.elements;
 }
 
 #endif /* SRC_QUEUEARRAY_HPP_ */

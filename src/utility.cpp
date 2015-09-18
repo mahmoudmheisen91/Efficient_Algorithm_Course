@@ -7,7 +7,7 @@
 
 #include "utility.hpp"
 
-void error(bool condition, const std::string& message) {
+void Error(bool condition, const std::string& message) {
 	if(condition)
 		throw std::runtime_error(message);
 }

@@ -13,6 +13,6 @@
 #include <string>
 
 // Function that throw an error when condition is true:
-void error(bool condition, const std::string& message);
+void Error(bool condition, const std::string& message);
 
 #endif /* SRC_UTILITY_HPP_ */
