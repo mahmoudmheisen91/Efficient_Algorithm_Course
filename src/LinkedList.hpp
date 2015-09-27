@@ -63,7 +63,7 @@ public:
 	T get(const unsigned int& index) const;
 
 	// Set the element at specified index:
-	void set(const unsigned int& index);
+	void set(const unsigned int& index, const T& value);
 
 	// Returns new list containing subset range of elements:
 	LinkedList<T> sublist(const unsigned int& start, const unsigned int& length) const;
@@ -140,8 +140,15 @@ void LinkedList<T>::pushBack(const T& value) {
 
 // Push at the beginning of the list:
 template<class T>
-inline void LinkedList<T>::pushFront(const T& value) {
+void LinkedList<T>::pushFront(const T& value) {
 	insert(0, value);
+}
+
+// Operator <<: to add elements quickly to the end of the list:
+template<class T>
+LinkedList<T>& LinkedList<T>::operator<<(const T& value) {
+	pushBack(value);
+	return *this;
 }
 
 // Pop from the end of the list:
@@ -156,6 +163,36 @@ T LinkedList<T>::popFront(void) {
 	return remove(0);
 }
 
+// Insert before specified index:
+template<class T>
+void LinkedList<T>::insert(const unsigned int& index, const T& value) {
+	// Checking:
+	Error(index < 0 || index >= this->count, "Index out of Range");
+
+	// Make new point that contain the value:
+	Node<T>* newNode = new Node<T>(value);
+
+	if (this->count <= 1) {
+		newNode->next = this->head;
+		this->head = newNode;
+		this->count++;
+		return;
+	}
+
+	Node<T>* current = this->head;
+	Node<T>* prev = this->head;
+
+	// Link the Node before the index:
+	for(int i = 0; i < index - 2; i++) {
+		current = current->next;
+		prev = prev->next;
+	}
+	current = current->next;
+
+	newNode->next = current;
+	prev->next = newNode;
+}
+
 // Return the beginning of list:
 template<class T>
 T LinkedList<T>::front(void) const {
@@ -166,6 +203,60 @@ T LinkedList<T>::front(void) const {
 template<class T>
 T LinkedList<T>::back(void) const {
 	return get(count-1);
+}
+
+// Get the element at specified index:
+template<class T>
+T LinkedList<T>::get(const unsigned int& index) const {
+	// Checking:
+	Error(isEmpty(), "List is Empty");
+	Error(index < 0 || index >= this->count, "Index out of Range");
+
+	// Make new point that points to the head of the this list:
+	Node<T>* current = this->head;
+
+	// Traverse:
+	for(int i = 0; i < index; i++) {
+		current = current->next;
+	}
+
+	return current->data;
+}
+
+// Get the element at specified index:
+template<class T>
+void LinkedList<T>::set(const unsigned int& index, const T& value) {
+	// Checking:
+	Error(isEmpty(), "List is Empty");
+	Error(index < 0 || index >= this->count, "Index out of Range");
+
+	// Make new point that points to the head of the this list:
+	Node<T>* current = this->head;
+
+	// Traverse:
+	for(int i = 0; i < index; i++) {
+		current = current->next;
+	}
+
+	current->data = value;
+}
+
+// Clear list:
+template<class T>
+void LinkedList<T>::clear(void) {
+	// Make new point that points to the head of the this list:
+	Node<T>* current = this->head;
+
+	// Traverse:
+	while(current != NULL) {
+		delete current;
+		current = current->next;
+	}
+
+	// Init:
+	this->head = NULL;
+	this->tail = NULL;
+	this->count = 0;
 }
 
 // toString method:
@@ -212,7 +303,7 @@ std::ostream& operator<<(std::ostream& output, const LinkedList<E>& other) {
 	// Make new point that points to the head of the other list:
 	Node<E>* current = other.head;
 
-	// Deep copy:
+	// Traverse:
 	while(current != NULL) {
 		output << current->data << " ";
 		current = current->next;
