@@ -167,14 +167,21 @@ T LinkedList<T>::popFront(void) {
 template<class T>
 void LinkedList<T>::insert(const unsigned int& index, const T& value) {
 	// Checking:
-	Error(index < 0 || index >= this->count, "Index out of Range");
+	Error(index < 0 || index > this->count, "Index out of Range");
 
 	// Make new point that contain the value:
 	Node<T>* newNode = new Node<T>(value);
 
-	if (this->count <= 1) {
+	if (index == 0) {
 		newNode->next = this->head;
 		this->head = newNode;
+		this->count++;
+		return;
+	}
+
+	if (index == 1) {
+		head->next = newNode;
+		newNode->next = NULL;
 		this->count++;
 		return;
 	}
@@ -183,7 +190,7 @@ void LinkedList<T>::insert(const unsigned int& index, const T& value) {
 	Node<T>* prev = this->head;
 
 	// Link the Node before the index:
-	for(int i = 0; i < index - 2; i++) {
+	for(int i = 0; i < index - 1; i++) {
 		current = current->next;
 		prev = prev->next;
 	}
@@ -191,6 +198,35 @@ void LinkedList<T>::insert(const unsigned int& index, const T& value) {
 
 	newNode->next = current;
 	prev->next = newNode;
+	this->count++;
+}
+
+// Remove the node at the specified index:
+template<class T>
+T LinkedList<T>::remove(const unsigned int& index) {
+	// Checking:
+	Error(isEmpty(), "List is Empty");
+	Error(index < 0 || index >= this->count, "Index out of Range");
+
+	Node<T>* current = this->head;
+	Node<T>* prev = this->head;
+
+	if (index == 0) {
+		this->head = head->next;
+		delete current;
+		this->count--;
+		return;
+	}
+
+	// Advance to index:
+	for(int i = 0; i < index-1; i++) {
+		current = current->next;
+		prev = prev->next;
+	}
+	current = current->next;
+
+	// Delete:
+
 }
 
 // Return the beginning of list:
@@ -245,12 +281,15 @@ void LinkedList<T>::set(const unsigned int& index, const T& value) {
 template<class T>
 void LinkedList<T>::clear(void) {
 	// Make new point that points to the head of the this list:
-	Node<T>* current = this->head;
+	Node<T>* current = NULL;
 
-	// Traverse:
-	while(current != NULL) {
+	// Delete head pointer and all other pointers:
+	while(this->head != NULL) {
+		// Assign current to head, move the head to next one, then remove the current,
+		// do not delete the current before moving the head to the next one:
+		current = head;
+		head = head->next;
 		delete current;
-		current = current->next;
 	}
 
 	// Init:
