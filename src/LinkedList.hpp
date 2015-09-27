@@ -12,7 +12,6 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <cassert>
 
 // Include Project headers:
 #include "Node.hpp"
@@ -87,14 +86,140 @@ public:
 
 private:
 	// Member variables:
-	Node<T>* head;
-	Node<T>* current;
+	Node<T>* head;		// beginning
+	Node<T>* tail;		// end		(head------------tail)
 	unsigned int count;
 
 	// Clone method:
 	void clone(LinkedList<T>& other);
 
+// Write date to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const LinkedList<E>& other);
 };
+
+// Default constructor:
+template<class T>
+LinkedList<T>::LinkedList() {
+	// Init:
+	this->head = NULL;
+	this->tail = NULL;
+	this->count = 0;
+}
+
+// Copy constructor:
+template<class T>
+LinkedList<T>::LinkedList(LinkedList<T>& other) {
+	// Copy:
+	clone(other);
+}
+
+// Destructor:
+template<class T>
+LinkedList<T>::~LinkedList() {
+	// Clear this:
+	clear();
+}
+
+// Assignment operator:
+template<class T>
+LinkedList<T>& LinkedList<T>::operator =(LinkedList<T>& other) {
+	// Clear this:
+	clear();
+
+	// Copy:
+	clone(other);
+	return *this;
+}
+
+// Push at the end of the list:
+template<class T>
+void LinkedList<T>::pushBack(const T& value) {
+	insert(this->count, value);
+}
+
+// Push at the beginning of the list:
+template<class T>
+inline void LinkedList<T>::pushFront(const T& value) {
+	insert(0, value);
+}
+
+// Pop from the end of the list:
+template<class T>
+T LinkedList<T>::popBack(void) {
+	return remove(count-1);
+}
+
+// Pop from the beginning of the list:
+template<class T>
+T LinkedList<T>::popFront(void) {
+	return remove(0);
+}
+
+// Return the beginning of list:
+template<class T>
+T LinkedList<T>::front(void) const {
+	return get(0);
+}
+
+// Return the end of list:
+template<class T>
+T LinkedList<T>::back(void) const {
+	return get(count-1);
+}
+
+// toString method:
+template<class T>
+std::string LinkedList<T>::toString(void) const {
+	// Make an output string stream and insert this into it:
+	std::ostringstream oss;
+	oss << *this;
+
+	// Transform the string stream to string:
+	return oss.str();
+}
+
+// Clone method:
+template<class T>
+void LinkedList<T>::clone(LinkedList<T>& other) {
+	// Init:
+	this->head = NULL;
+	this->tail = NULL;
+	this->count = 0;
+
+	// Check if empty:
+	if(other.isEmpty()) return;
+
+	// Make new point that points to the head of the other list:
+	Node<T>* current = other.head;
+
+	// Deep copy:
+	while(current != NULL) {
+		pushBack(current->data);
+		current = current->next;
+	}
+}
+
+// Write date to command line:
+template<class E>
+std::ostream& operator<<(std::ostream& output, const LinkedList<E>& other) {
+	// Check if empty:
+	if(other.isEmpty()) {
+		output << "List is Empty";
+		return output;
+	}
+
+	// Make new point that points to the head of the other list:
+	Node<E>* current = other.head;
+
+	// Deep copy:
+	while(current != NULL) {
+		output << current->data << " ";
+		current = current->next;
+	}
+
+	return output;
+}
 
 #endif /* SRC_LINKEDLIST_HPP_ */
 
