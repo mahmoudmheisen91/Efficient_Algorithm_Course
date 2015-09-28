@@ -5,6 +5,37 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * LinkedList generic class stores list of values.
+ * Has an iterator to loop through its content.
+ */
+
+/*
+ * TODO:
+ * Add iterator
+ * Add constant iterator
+ * Reverse iterators??
+ * Add >> operator to take values until it hits enter
+ * Add checkIndex method
+ * Work with STL sort
+ * Implement sublist Method
+ * Make use of the tail
+ * Double Linked List
+ * Reduce the amount of code inside the insert and remove methods
+ * Search??
+ * []??
+ * Add operators +, +=, etc ??
+ * Advance ??
+ * Traverse??
+ * Visitor??
+ */
+
+// When declaring a new node, do not use new keyword, because we assign another pointer node
+// to it and the allocated memory using new keyword is lost, the delete will remove the assigned
+// pointer not the allocated chunk, just make a pointer:
+// use this: Node<T>* current;
+// not this: Node<T>* current = new Node<T>();
+
 #ifndef SRC_LINKEDLIST_HPP_
 #define SRC_LINKEDLIST_HPP_
 
@@ -30,7 +61,7 @@ public:
 	virtual ~LinkedList();
 
 	// Assignment operator:
-	LinkedList<T>& operator=(LinkedList<T>& other);
+	LinkedList<T>& operator=(const LinkedList<T>& other);
 
 	// Push at the end of the list:
 	void pushBack(const T& value);
@@ -40,6 +71,9 @@ public:
 
 	// Operator <<: to add elements quickly to the end of the list:
 	LinkedList<T>& operator<<(const T& value);
+
+	// Operator >>: to pop elements quickly from the end of the list:
+	LinkedList<T>& operator>>(T& value);
 
 	// Pop from the end of the list:
 	T popBack(void);
@@ -88,10 +122,10 @@ private:
 	// Member variables:
 	Node<T>* head;		// beginning
 	Node<T>* tail;		// end		(head------------tail)
-	unsigned int count;
+	unsigned int count;	// current size
 
 	// Clone method:
-	void clone(LinkedList<T>& other);
+	void clone(const LinkedList<T>& other);
 
 // Write date to command line:
 template<class E>
@@ -123,7 +157,7 @@ LinkedList<T>::~LinkedList() {
 
 // Assignment operator:
 template<class T>
-LinkedList<T>& LinkedList<T>::operator =(LinkedList<T>& other) {
+LinkedList<T>& LinkedList<T>::operator =(const LinkedList<T>& other) {
 	// Clear this:
 	clear();
 
@@ -148,6 +182,13 @@ void LinkedList<T>::pushFront(const T& value) {
 template<class T>
 LinkedList<T>& LinkedList<T>::operator<<(const T& value) {
 	pushBack(value);
+	return *this;
+}
+
+// Operator >>: to pop elements quickly from the end of the list:
+template<class T>
+LinkedList<T>& LinkedList<T>::operator>>(T& value) {
+	value = popBack();
 	return *this;
 }
 
@@ -186,16 +227,17 @@ void LinkedList<T>::insert(const unsigned int& index, const T& value) {
 		return;
 	}
 
-	Node<T>* current = this->head;
-	Node<T>* prev = this->head;
+	Node<T>* current = this->head;	// points to index
+	Node<T>* prev = this->head;		// points before index
 
-	// Link the Node before the index:
+	// Advance the current and prev nodes:
 	for(int i = 0; i < index - 1; i++) {
 		current = current->next;
 		prev = prev->next;
 	}
 	current = current->next;
 
+	// Link and increase the size:
 	newNode->next = current;
 	prev->next = newNode;
 	this->count++;
@@ -208,15 +250,19 @@ T LinkedList<T>::remove(const unsigned int& index) {
 	Error(isEmpty(), "List is Empty");
 	Error(index < 0 || index >= this->count, "Index out of Range");
 
-	Node<T>* current = this->head;
-	Node<T>* prev = this->head;
+	T temp;		// the return value
 
+	Node<T>* old = this->head;
 	if (index == 0) {
 		this->head = head->next;
-		delete current;
+		temp = old->data;
+		delete old;
 		this->count--;
-		return;
+		return temp;
 	}
+
+	Node<T>* current = this->head;	// points to index
+	Node<T>* prev = this->head;		// points before index
 
 	// Advance to index:
 	for(int i = 0; i < index-1; i++) {
@@ -225,8 +271,14 @@ T LinkedList<T>::remove(const unsigned int& index) {
 	}
 	current = current->next;
 
-	// Delete:
-
+	// Link, delete and decrement the size:
+	old = current;
+	current = current->next;
+	prev->next = current;
+	temp = old->data;
+	delete old;
+	this->count--;
+	return temp;
 }
 
 // Return the beginning of list:
@@ -251,7 +303,7 @@ T LinkedList<T>::get(const unsigned int& index) const {
 	// Make new point that points to the head of the this list:
 	Node<T>* current = this->head;
 
-	// Traverse:
+	// Advance to index:
 	for(int i = 0; i < index; i++) {
 		current = current->next;
 	}
@@ -269,7 +321,7 @@ void LinkedList<T>::set(const unsigned int& index, const T& value) {
 	// Make new point that points to the head of the this list:
 	Node<T>* current = this->head;
 
-	// Traverse:
+	// Advance to index:
 	for(int i = 0; i < index; i++) {
 		current = current->next;
 	}
@@ -311,7 +363,7 @@ std::string LinkedList<T>::toString(void) const {
 
 // Clone method:
 template<class T>
-void LinkedList<T>::clone(LinkedList<T>& other) {
+void LinkedList<T>::clone(const LinkedList<T>& other) {
 	// Init:
 	this->head = NULL;
 	this->tail = NULL;
