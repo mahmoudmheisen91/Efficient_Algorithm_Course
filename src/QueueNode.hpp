@@ -5,227 +5,201 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Linked List based Stack:
+ * a collection that processes values in a first-in/first-out (FIFO) order.
+ */
+
+/*
+ * TODO:
+ * Add >> operator to read data from command line
+ * Add iterator
+ * Add const iterator
+ * Work with STL sort
+ * implement it as a ring
+ */
+
 #ifndef SRC_QUEUENODE_HPP_
 #define SRC_QUEUENODE_HPP_
 
 // Include C++ Libraries:
 #include <iostream>
-#include <stdexcept>
+#include <string>
+#include <sstream>
 
 // Include project headers:
-#include "Node.hpp"
+#include "LinkedList.hpp"
+#include "utility.hpp"
 
 template <class T>
 class QueueNode {
-	public:
-		// Constructor:
-		QueueNode();
+public:
+	// Constructor:
+	QueueNode();
 
-		// TODO:
-		// Copy Constructor:
-		//QueueNode(const QueueNode& other);
+	// Copy Constructor:
+	QueueNode(const QueueNode& other);
 
-		// Destructor:
-		virtual ~QueueNode();
+	// Destructor:
+	virtual ~QueueNode();
 
-		// TODO:
-		// Copy assignment:
-		//const QueueNode<T>& operator=(const QueueNode<T>& other);
+	// Copy assignment:
+	QueueNode<T>& operator=(const QueueNode<T>& other);
 
-		// Add element at the top of the queue:
-		void enqueue(T element);
+	// Add element at the top of the queue:
+	void enqueue(const T& element);
 
-		// Remove element from the end of the queue:
-		T dequeue() throw(std::runtime_error);
+	// Remove element from the end of the queue:
+	T dequeue(void);
 
-		// Return the top of the queue without removing it:
-		T top() const throw(std::runtime_error);
+	// Return the top of the queue without removing it:
+	T top(void) const;
 
-		// Return current number of elements in the queue:
-		int size() const;
+	// Operator <<: to quickly add elements to the queue:
+	QueueNode<T>& operator<<(const T& value);
 
-		// isEmpty method:
-		bool isEmpty() const;
+	// Operator >>: to quickly remove elements from the queue:
+	QueueNode<T>& operator>>(T& value);
 
-		// toString method:
-		void toString() const;
+	// Clear the queue:
+	void clear(void);
 
-	private:
-		// Member variables:
-		Node<T>* head;
-		Node<T>* tail;
-		int currentSize;
+	// Return current number of elements in the queue:
+	inline unsigned int size(void) const {
+		return elements.size();
+	}
 
-		// TODO:
-		// Clone method:
-		//void clone(const QueueNode& other);
+	// isEmpty method:
+	inline bool isEmpty(void) const {
+		return elements.isEmpty();
+	}
+
+	// toString method:
+	std::string toString(void) const;
+
+private:
+	// Member variables:
+	LinkedList<T> elements;
+
+// Write date to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const QueueNode<E>& other);
 };
 
 // Constructor:
 template <class T>
-QueueNode<T>::QueueNode() {
-	this->currentSize = 0;
-	this->head = NULL;
-	this->tail = NULL;
+QueueNode<T>::QueueNode()
+:elements()
+{
 }
 
-/*
 // Copy Constructor:
 template <class T>
 QueueNode<T>::QueueNode(const QueueNode& other) {
-	// Copy:
-	clone(other);
+	// Deep copy:
+	this->elements = other.elements;
 }
-*/
 
 // Destructor:
 template <class T>
 QueueNode<T>::~QueueNode() {
-	// TODO: is correct??
-	// Set size to zero:
-	this->currentSize = 0;
-
-	// Delete head pointer and all other pointers:
-	while(this->head != NULL) {
-		// Make new node that point to head:
-		Node<T>* current = new Node<T>;
-
-		current = head;
-		this->head = head->next;
-
-		delete current;
-	}
-
-	this->tail = NULL;
+	clear();
 }
 
-/*
 // Copy assignment:
 template <class T>
-const QueueNode<T>& QueueNode<T>::operator=(const QueueNode<T>& other) {
-	// Delete this before copying:
-	if(!this->isEmpty()) {
-		this->~QueueNode();
-	}
+QueueNode<T>& QueueNode<T>::operator=(const QueueNode<T>& other) {
+	// Clear this first:
+	clear();
 
-	// Copy:
-	clone(other);
+	// Deep copy:
+	this->elements = other.elements;
 
 	return *this;
 }
-*/
 
 // Add element at the top of the queue:
 template <class T>
-void QueueNode<T>::enqueue(T element) {
-
-	// Add new node that contain the element:
-	Node<T>* newNode = new Node<T>;
-	newNode->data = element;
-	newNode->next = NULL;
-
-	// Link:
-	if(isEmpty()) {
-		this->head = newNode;
-		this->tail = newNode;
-	}
-	else {
-		tail->next = newNode;
-		tail = newNode;
-	}
-
-	// Increase the size:
-	currentSize++;
+void QueueNode<T>::enqueue(const T& element) {
+	elements << element;
 }
 
 // Remove element from the end of the queue:
 template <class T>
-T QueueNode<T>::dequeue() throw(std::runtime_error) {
-	// If the queue is empty throw run time error:
-	if(isEmpty())
-		throw std::runtime_error("The Queue is empty");
+T QueueNode<T>::dequeue(void) {
+	// Check:
+	Error(isEmpty(), "Queue is Empty");
 
-	// Save the item in the tail:
-	T item = head->data;
-
-	// Make new node that point to head, to delete it latter:
-	Node<T>* old;
-	old = head;
-
-	// Make the head point to the next value in the queue:
-	head = old->next;
-
-	// Decrease the size:
-	currentSize--;
-
-	// Delete the old head:
-	delete old;
-
-	// Return the item:
-	return item;
+	return elements.popFront();
 }
 
 // Return the top of the queue without removing it:
 template <class T>
-T QueueNode<T>::top() const throw(std::runtime_error) {
-	// If the stack is empty throw run time error:
-	if(isEmpty())
-		throw new std::runtime_error("The Queue is empty");
+T QueueNode<T>::top(void) const {
+	// Check:
+	Error(isEmpty(), "Queue is Empty");
 
-	// Return the item in the head:
-	return head->data;
+	return elements.front();
 }
 
-// Return current number of elements in the queue:
-template <class T>
-int QueueNode<T>::size() const {
-	return this->currentSize;
+// Operator <<: to quickly add elements to the queue:
+template<class T>
+QueueNode<T>& QueueNode<T>::operator<<(const T& value) {
+	this->elements << value;
+	return *this;
 }
 
-// isEmpty method:
-template <class T>
-bool QueueNode<T>::isEmpty() const {
-	return this->currentSize == 0;
+// Operator >>: to quickly remove elements from the queue:
+template<class T>
+QueueNode<T>& QueueNode<T>::operator>>(T& value) {
+	value = dequeue();
+	return *this;
+}
+
+// Clear the queue:
+template<class T>
+void QueueNode<T>::clear(void) {
+	elements.clear();
 }
 
 // toString method:
 template <class T>
-void QueueNode<T>::toString() const {
-	// If the queue is empty:
-	if(isEmpty()) {
-		std::cout << "The Queue is empty" << std::endl;
-		return;
-	}
+std::string QueueNode<T>::toString() const {
+	// Make an output string stream and insert this into it:
+	std::ostringstream oss;
+	oss << *this;
 
-	// Make new node that points to the head, to loop through the queue:
-	Node<T>* current;
-	current = head;
-
-	// Print:
-	while(current != NULL) {
-		std::cout << current->data << " ";
-		current = current->next;
-	}
-
-	std::cout << std::endl;
-	delete current;
+	// Transform the string stream to string:
+	return oss.str();
 }
 
-/*
-// Clone method:
-template <class T>
-void QueueNode<T>::clone(QueueNode& other) {
-	// Initialize this queue:
-	this->currentSize = 0;
-	this->head = NULL;
-	this->tail = NULL;
+// Write date to command line:
+template<class E>
+std::ostream& operator<<(std::ostream& output, const QueueNode<E>& other) {
+	// Check if empty:
+	if(other.isEmpty()) {
+		output << "Queue is Empty";
+		return output;
+	}
 
-	// If the queue is empty:
-	if(other.isEmpty()) return;
-
-
+	return output << other.elements;
 }
-*/
-
 
 #endif /* SRC_QUEUENODE_HPP_ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

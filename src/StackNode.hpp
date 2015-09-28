@@ -108,6 +108,9 @@ StackNode<T>::~StackNode() {
 // Copy assignment:
 template <class T>
 const StackNode<T>& StackNode<T>::operator=(const StackNode<T>& other) {
+	// Clear this first:
+	clear();
+
 	// Deep copy:
 	this->elements = other.elements;
 	return *this;
