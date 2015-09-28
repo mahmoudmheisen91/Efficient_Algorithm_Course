@@ -5,237 +5,179 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Linked List based Stack:
+ * a collection that processes values in a last-in/first-out (LIFO) order.
+ */
+
+/*
+ * TODO:
+ * Add >> operator to read data from command line
+ * Add iterator
+ * Add const iterator
+ * Work with STL sort
+ */
+
 #ifndef SRC_STACKNODE_HPP_
 #define SRC_STACKNODE_HPP_
 
 // Include C++ Libraries:
 #include <iostream>
-#include <stdexcept>
+#include <string>
+#include <sstream>
 
 // Include project headers:
-#include "Node.hpp"
+#include "LinkedList.hpp"
+#include "utility.hpp"
 
-// When declaring a new node, do not use new keyword, because we assign another pointer node
-// to it and the allocated memory using new keyword is lost, the delete will remove the assigned
-// pointer not the allocated chunk, just make a pointer:
-// use this: Node<T>* current;
-// not this: Node<T>* current = new Node<T>();
-
-template <class T>
+template <class T = int>
 class StackNode {
-	public:
-		// Constructor:
-		StackNode();
+public:
+	// Constructor:
+	StackNode();
 
-		// Copy Constructor:
-		StackNode(const StackNode& other);
+	// Copy Constructor:
+	StackNode(const StackNode<T>& other);
 
-		// Destructor:
-		virtual ~StackNode();
+	// Destructor:
+	virtual ~StackNode();
 
-		// Copy assignment:
-		const StackNode<T>& operator=(const StackNode<T>& other);
+	// Copy assignment:
+	const StackNode<T>& operator=(const StackNode<T>& other);
 
-		// Push element at the top of the stack:
-		void push(T element);
+	// Push element at the top of the stack:
+	void push(const T& element);
 
-		// Pop element from the top of the stack:
-		T pop() throw(std::runtime_error);
+	// Pop element from the top of the stack:
+	T pop(void);
 
-		// Return the top of the stack without removing it:
-		T top() const throw(std::runtime_error);
+	// Return the top of the stack without removing it:
+	T top(void) const;
 
-		// Return current number of elements in the stack:
-		int size() const;
+	// Operator <<: to quickly add elements to the stack:
+	StackNode<T>& operator<<(const T& value);
 
-		// isEmpty method:
-		bool isEmpty() const;
+	// Operator >>: to quickly remove elements from the stack:
+	StackNode<T>& operator>>(T& value);
 
-		// toString method:
-		void toString() const;
+	// Clear the stack:
+	void clear(void);
 
-	private:
-		// Member variables:
-		Node<T>* head;
-		int currentSize;
+	// Return current number of elements in the stack:
+	inline unsigned int size(void) const {
+		return elements.size();
+	}
 
-		// Clone method:
-		void clone(const StackNode& other);
+	// isEmpty method:
+	inline bool isEmpty(void) const {
+		return elements.isEmpty();
+	}
+
+	// toString method:
+	std::string toString(void) const;
+
+private:
+	// Member variables:
+	LinkedList<T> elements;
+
+// Write data to command line:
+template<class E>
+friend std::ostream& operator<<(std::ostream& output, const StackNode<E>& other);
 };
 
 // Constructor:
 template <class T>
-StackNode<T>::StackNode() {
-	this->currentSize = 0;
-	this->head = NULL;
+StackNode<T>::StackNode()
+:elements()
+{
 }
 
 // Copy Constructor:
 template <class T>
-StackNode<T>::StackNode(const StackNode& other) {
-	// Copy:
-	clone(other);
+StackNode<T>::StackNode(const StackNode<T>& other) {
+	// Deep copy:
+	this->elements = other.elements;
 }
 
 // Destructor:
 template <class T>
 StackNode<T>::~StackNode() {
-	// TODO: is correct??
-	// Set size to zero:
-	this->currentSize = 0;
-
-	// Make new node that point to head:
-	Node<T>* current;
-
-	// Delete head pointer and all other pointers:
-	while(head != NULL) {
-		// Assign current to head, move the head to next one, then remove the current
-		// do not delete the current before moving the head to the next one:
-		current = head;
-		head = head->next;
-
-		delete current;
-	}
+	clear();
 }
 
 // Copy assignment:
 template <class T>
 const StackNode<T>& StackNode<T>::operator=(const StackNode<T>& other) {
-	// Delete this before copying:
-	if(!this->isEmpty()) {
-		this->~StackNode();
-	}
-
-	// Copy:
-	clone(other);
-
+	// Deep copy:
+	this->elements = other.elements;
 	return *this;
 }
 
 // Push element at the top of the stack:
 template <class T>
-void StackNode<T>::push(T element) {
-
-	// Add new node that contain the element:
-	Node<T>* newNode = new Node<T>(element);
-
-	// Make this new node point to the head:
-	newNode->next = head;
-
-	// Make the head point to this node:
-	head = newNode;
-
-	// Increase the size:
-	currentSize++;
+void StackNode<T>::push(const T& element) {
+	elements << element;
 }
 
 // Pop element from the top of the stack:
 template <class T>
-T StackNode<T>::pop() throw(std::runtime_error) {
-	// If the stack is empty throw run time error:
-	if(isEmpty())
-		throw std::runtime_error("Stack underflow");
+T StackNode<T>::pop(void) {
+	// Check:
+	Error(isEmpty(), "Stack underflow");
 
-	// Save the item in the head:
-	T item = head->data;
-
-	// Make new node that point to head, to delete it latter:
-	Node<T>* old;
-	old = head;
-
-	// Make the head point to the next value in the stack:
-	head = old->next;
-
-	// Decrease the size:
-	currentSize--;
-
-	// Delete the old head:
-	delete old;
-
-	// Return the item:
-	return item;
+	return elements.popBack();
 }
 
 // Return the top of the stack without removing it:
 template <class T>
-T StackNode<T>::top() const throw(std::runtime_error) {
-	// If the stack is empty throw run time error:
-	if(isEmpty())
-		throw new std::runtime_error("Stack underflow");
+T StackNode<T>::top(void) const {
+	// Check:
+	Error(isEmpty(), "Stack underflow");
 
-	// Return the item in the head:
-	return head->data;
+	return elements.back();
 }
 
-// Return current number of elements in the stack:
-template <class T>
-int StackNode<T>::size() const {
-	return this->currentSize;
+// Operator <<: to quickly add elements to the stack:
+template<class T>
+StackNode<T>& StackNode<T>::operator<<(const T& value) {
+	this->elements << value;
+	return *this;
 }
 
-// isEmpty method:
-template <class T>
-bool StackNode<T>::isEmpty() const {
-	return this->currentSize == 0;
+// Operator >>: to quickly remove elements from the stack:
+template<class T>
+StackNode<T>& StackNode<T>::operator>>(T& value) {
+	value = pop();
+	return *this;
+}
+
+// Clear the stack:
+template<class T>
+void StackNode<T>::clear(void) {
+	elements.clear();
 }
 
 // toString method:
-template <class T>
-void StackNode<T>::toString() const {
-	// If the stack is empty:
-	if(isEmpty()) {
-		std::cout << "The stack is empty" << std::endl;
-		return;
-	}
+template<class T>
+std::string StackNode<T>::toString(void) const {
+	// Make an output string stream and insert this into it:
+	std::ostringstream oss;
+	oss << *this;
 
-	// Make new node that points to the head, to loop through the stack:
-	Node<T>* current;
-	current = head;
-
-	// Print:
-	while(current != NULL) {
-		std::cout << current->data << " ";
-		current = current->next;
-	}
-
-	std::cout << std::endl;
-	delete current;
+	// Transform the string stream to string:
+	return oss.str();
 }
 
-// Clone method:
-template <class T>
-void StackNode<T>::clone(const StackNode& other) {
-	// Initialize this stack:
-	this->currentSize = 0;
-	this->head = NULL;
+// Write date to command line:
+template<class E>
+std::ostream& operator<<(std::ostream& output, const StackNode<E>& other) {
+	// Check if empty:
+	if(other.isEmpty()) {
+		output << "Stack is Empty";
+		return output;
+	}
 
-	// If the stack is empty:
-	if(other.isEmpty()) return;
-
-	// Make new node that points to the head of the other stack, to loop through the stack:
-	Node<T>* current;
-	current = other.head;
-
-	// TODO: two loops:
-	// Make temp stack, to hold the data in other stack in reversed way:
-	StackNode<T> tempStack;
-
-	// Add data from the other stack to temp stack:
-	while(current != NULL) {
-		tempStack.push(current->data);
-		current = current->next;
-	} // in this loop, we moved through the other stack without removing any data from it
-
-	// Make the new node points to the head of the temp stack:
-	current = tempStack.head;
-
-	// Add data from the temp stack to this stack:
-	while(current != NULL) {
-		this->push(tempStack.pop()); // inside pop the head is changed
-		current = tempStack.head; 	 // no need to point to the next
-	} // in this loop, we removed every data from temp stack, to reduce memory usage
-
-	delete current;
+	return output << other.elements;
 }
 
 #endif /* SRC_STACKNODE_HPP_ */

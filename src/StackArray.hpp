@@ -44,6 +44,9 @@ public:
 	// Destructor:
 	virtual ~StackArray(void);
 
+	// Assignment operator:
+	StackArray<T>& operator=(const StackArray<T>& other);
+
 	// Push element at the top of the stack:
 	void push(const T& element);
 
@@ -61,6 +64,9 @@ public:
 
 	// Operator >>: to quickly remove elements from the stack:
 	StackArray<T>& operator>>(T& value);
+
+	// Clear the stack:
+	void clear(void);
 
 	// Return current number of elements in the stack:
 	inline unsigned int size(void) const {
@@ -105,7 +111,9 @@ friend std::ostream& operator<<(std::ostream& output, const StackArray<E>& other
 
 // Constructor:
 template <class T>
-StackArray<T>::StackArray() {
+StackArray<T>::StackArray()
+:elements()
+{
 }
 
 // Copy Constructor:
@@ -117,6 +125,13 @@ StackArray<T>::StackArray(const StackArray& other) {
 // Destructor:
 template <class T>
 StackArray<T>::~StackArray(void) {
+	clear();
+}
+
+// Assignment operator:
+template <class T>
+StackArray<T>& StackArray<T>::operator=(const StackArray<T>& other) {
+	this->elements = other.elements;
 }
 
 // Push element at the top of the stack:
@@ -173,6 +188,12 @@ template<class T>
 StackArray<T>& StackArray<T>::operator>>(T& value) {
 	value = pop();
 	return *this;
+}
+
+// Clear the stack:
+template<class T>
+void StackArray<T>::clear(void) {
+	elements.clear();
 }
 
 // Write data to command line:
