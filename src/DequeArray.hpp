@@ -5,6 +5,21 @@
  *      Author: Mahmoud Mheisen
  */
 
+/*
+ * Array based deque, resizable array:
+ * a collection that acts as two sided stack
+ * Double the size when full, half the size when quarter full
+ * Resizing operation has an amortized time of O(1)
+ */
+
+/*
+ * TODO:
+ * cin >> s; and s has zero length - Read data from command line:
+ * Dereferencing problem in iterator, also in other iterator
+ * Add const iterator
+ * Work with STL sort
+ */
+
 #ifndef SRC_DEQUEARRAY_HPP_
 #define SRC_DEQUEARRAY_HPP_
 
@@ -70,6 +85,26 @@ public:
 	// isEmpty method:
 	inline bool isEmpty(void) const {
 		return elements.isEmpty();
+	}
+
+	// Random access iterator to loop through the deque:
+	class iterator : public Vector<T>::iterator {
+	public:
+		// Default constructor, will launch iterator constructor:
+		iterator() : Vector<T>::iterator() {}
+
+		// Constructor that lunch copy constructor of Vector iterator:
+		iterator(const typename Vector<T>::iterator& iter) : Vector<T>::iterator(iter) {}
+	};
+
+	// Iterator that return the start of the deque:
+	iterator begin(void) const {
+		return iterator(elements.begin());
+	}
+
+	// Iterator that return the end of the deque:
+	iterator end(void) const {
+		return iterator(elements.end());
 	}
 
 private:
