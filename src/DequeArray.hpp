@@ -17,7 +17,7 @@
 #include "Vector.hpp"
 #include "utility.hpp"
 
-template<class T>
+template<class T = int>
 class DequeArray {
 public:
 	// Default constructor:
@@ -39,22 +39,22 @@ public:
 	void addFront(const T& item);
 
 	// Remove item from the end of the deque:
-	const T& removeBack(void);
+	const T removeBack(void);
 
 	// Remove item from the start of the deque:
-	const T& removeFront(void);
+	const T removeFront(void);
 
 	// Peek at the end of the deque:
-	const T& back(void);
+	const T back(void) const;
 
 	// Peek at the start of the deque:
-	const T& front(void);
+	const T front(void) const;
 
 	// Operator <<: to quickly add elements to the deque:
-	const DequeArray<T>& operator<<(const T& item);
+	DequeArray<T>& operator<<(const T& item);
 
 	// Operator >>: to quickly remove elements from the deque:
-	const DequeArray<T>& operator>>(const T& item);
+	DequeArray<T>& operator>>(T& item);
 
 	// Clear the deque:
 	void clear(void);
@@ -78,6 +78,11 @@ private:
 
 	// Clone method for copying:
 	void clone(const DequeArray<T>& other);
+
+	// Test if the deque is quarter full:
+	inline bool quarterFull(void) const {
+		return elements.size() == elements.length() / 4;
+	}
 
 // Write data to command line:
 template<class E>
@@ -130,38 +135,62 @@ void DequeArray<T>::addFront(const T& item) {
 
 // Remove item from the end of the deque:
 template<class T>
-const T& DequeArray<T>::removeBack(void) {
-	return elements.popBack();
+const T DequeArray<T>::removeBack(void) {
+	// Checking:
+	Error(isEmpty(), "Deque is Empty");
+
+	// Decrease the current size and return the element:
+	T item = elements.popBack();
+
+	// If quarter full cut the length to half:
+	if(quarterFull()) elements.resize(elements.length() / 2);
+
+	return item;
 }
 
 // Remove item from the start of the deque:
 template<class T>
-const T& DequeArray<T>::removeFront(void) {
-	return elements.remove(0);
+const T DequeArray<T>::removeFront(void) {
+	// Checking:
+	Error(isEmpty(), "Deque is Empty");
+
+	// Decrease the current size and return the element:
+	T item = elements.remove(0);
+
+	// If quarter full cut the length to half:
+	if(quarterFull()) elements.resize(elements.length() / 2);
+
+	return item;
 }
 
 // Peek at the end of the deque:
 template<class T>
-const T& DequeArray<T>::back(void) {
+const T DequeArray<T>::back(void) const {
+	// Checking:
+	Error(isEmpty(), "Deque is Empty");
+
 	return elements.back();
 }
 
 // Peek at the start of the deque:
 template<class T>
-const T& DequeArray<T>::front(void) {
+const T DequeArray<T>::front(void) const {
+	// Checking:
+	Error(isEmpty(), "Deque is Empty");
+
 	return elements.front();
 }
 
 // Operator <<: to quickly add elements to the deque:
 template<class T>
-const DequeArray<T>& DequeArray<T>::operator <<(const T& item) {
+DequeArray<T>& DequeArray<T>::operator <<(const T& item) {
 	addBack(item);
 	return *this;
 }
 
 // Operator >>: to quickly remove elements from the deque:
 template<class T>
-const DequeArray<T>& DequeArray<T>::operator >>(const T& item) {
+DequeArray<T>& DequeArray<T>::operator >>(T& item) {
 	item = removeBack();
 	return *this;
 }
